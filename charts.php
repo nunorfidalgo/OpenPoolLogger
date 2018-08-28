@@ -49,7 +49,7 @@ $_SESSION["sidebar"] = "charts";
 					<a class="dropdown-item" href="#">Maq</a>
 				</div>
 			</div>
-		  
+
 		</div>
 
     <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
@@ -66,37 +66,12 @@ $_SESSION["sidebar"] = "charts";
 				</div>
 		  </div>
 
-	  	<button type="button" class="btn btn-outline-secondary active"> Mostrar </button>
+	  	<button type="button" class="btn btn-outline-secondary active"> <ion-icon name="pulse"></ion-icon>&nbsp;Mostrar </button>
 	</div>
 
 </div>
 
-<canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
-
-<?php
-/*
-// $query = "SELECT * from parametros";
-$query = "SELECT `parametros`.`pid`, `parametros`.`cloro`, `parametros`.`dpd3`, `parametros`.`ph`, `parametros`.`temperatura`, `parametros`.`maq`, `parametros`.`datahora`, `funcionarios`.`fullname`
-FROM `parametros`, `funcionarios`
-WHERE `parametros`.`responsavel` = `funcionarios`.`fid`";
-
-if ($stmt = $con->prepare($query)) {
-    $stmt->execute();
-	//print_r($stmt);
-    $stmt->bind_result($id, $cloro, $dpd3, $ph, $temp, $maq, $datahora, $responsavel);
-    while ($stmt->fetch()) {
-        //printf("%s, %s\n", $field1, $field2);
-		printf("<tbody><tr>");
-
-		printf("<td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td>", $id, $cloro, $dpd3, $ph, $temp, $maq, $datahora, $responsavel);
-
-		printf("</tr></tbody>");
-    }
-    $stmt->close();
-}
-$con->close();
-*/
-?>
+<canvas class="my-4 w-100" id="myChart" width="900" height="350"></canvas>
 
     </table>
   </div>

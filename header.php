@@ -7,6 +7,8 @@
 
 	<title> OpenPoolLogger </title>
 
+	<!-- <link href="https://unpkg.com/ionicons@4.4.2/dist/css/ionicons.min.css" rel="stylesheet"> -->
+
 	<!-- Bootstrap core CSS -->
 	<!-- <link href="../../dist/css/bootstrap.min.css" rel="stylesheet"> -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">

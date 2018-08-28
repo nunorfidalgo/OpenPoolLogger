@@ -24,8 +24,8 @@ $_SESSION["sidebar"] = "logs";
 		<h1 class="h2"> Registos </h1>
 
 		<div class="btn-group" role="group">
-		  <a class="btn btn-outline-secondary" role="button" href="#"> Exportar </a>
-		  <a class="btn btn-outline-secondary active" role="button" href="logs_form.php"> Adicionar </a>
+		  <a class="btn btn-outline-secondary" role="button" href="#"><ion-icon name="paper"></ion-icon> &nbsp; Exportar </a>
+		  <a class="btn btn-outline-secondary active" role="button" href="logs_form.php"> <ion-icon name="add-circle-outline"></ion-icon>&nbsp;	Adicionar </a>
 		</div>
 
   	</div>
@@ -34,13 +34,24 @@ $_SESSION["sidebar"] = "logs";
 
 		<!-- <h1 class="h2"> Piscina </h1> -->
 
-		<div class="btn-group" role="group">
-			<button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				Piscina
-			</button>
-			<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-				<a class="dropdown-item" href="#">Piscina</a>
-				<a class="dropdown-item" href="#">Jacuzzi</a>
+		<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+			<div class="btn-group" role="group">
+				<button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Piscina
+				</button>
+				<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+					<a class="dropdown-item" href="#">Piscina</a>
+					<a class="dropdown-item" href="#">Jacuzzi</a>
+				</div>
+			</div>
+			<div class="btn-group" role="group">
+				<button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Descendente
+				</button>
+				<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+					<a class="dropdown-item" href="#">Ascendente</a>
+					<a class="dropdown-item" href="#">Descendente</a>
+				</div>
 			</div>
 		</div>
 
@@ -56,8 +67,8 @@ $_SESSION["sidebar"] = "logs";
 					<a class="dropdown-item" href="#">Último Mês</a>
 					<a class="dropdown-item" href="#">Último Ano</a>
 				</div>
-		  </div>		  
-		  <a class="btn btn-outline-secondary active" role="button" href="#"> Filtrar </a>
+		  </div>
+		  <a class="btn btn-outline-secondary active" role="button" href="#"> <ion-icon name="pulse"></ion-icon>&nbsp; Filtrar </a>
 		</div>
 
   </div>
@@ -66,13 +77,14 @@ $_SESSION["sidebar"] = "logs";
     <table class="table table-striped table-sm table-hover">
       <thead>
         <tr>
-          <th>#</th>
-          <th data-toggle="tooltip" data-placement="top" title="(ppm ou mg/l???)">Cloro</th>
-          <th data-toggle="tooltip" data-placement="top" title="(ppm ou mg/g(0-5)???)">DPD3</th>
+          <th data-toggle="tooltip" data-placement="top" title="id"><ion-icon name="key"></ion-icon></th>
+          <th data-toggle="tooltip" data-placement="top" title="0-2 ppm ou mg/l">Cloro</th>
+          <th data-toggle="tooltip" data-placement="top" title="0-2 ppm ou mg/l">DPD3</th>
           <th data-toggle="tooltip" data-placement="top" title="0-14">Ph</th>
           <th data-toggle="tooltip" data-placement="top" title="Celsius (ºC)">Temperatura(ºC)</th>
-				  <th data-toggle="tooltip" data-placement="top" title="(Watts?">Maq</th>
-				  <th data-toggle="tooltip" data-placement="top" title="Data hora">Data/Hora</th>
+				  <th data-toggle="tooltip" data-placement="top" title="Watts">Maq</th>
+					<th data-toggle="tooltip" data-placement="top" title="Correção valores de Cl/DPD3">Correção</th>
+				  <th data-toggle="tooltip" data-placement="top" title="Data e hora">Data/Hora</th>
 				  <th data-toggle="tooltip" data-placement="top" title="Funcionário">Responsável</th>
         </tr>
       </thead>
@@ -88,7 +100,9 @@ $conn = new mysqli($host, $user, $password, $dbname, $port, $socket)
 // WHERE `parametros`.`responsavel` = `funcionarios`.`fid`";
 $query = "SELECT `logs`.`pid`, `logs`.`cl`, `logs`.`dpd3`, `logs`.`ph`, `logs`.`temp`, `logs`.`maq`, `logs`.`timedate`, `employers`.`fullname`
 FROM `logs`, `employers`
-WHERE `logs`.`log_owner` = `employers`.`fid`";
+WHERE `logs`.`log_owner` = `employers`.`fid`
+ORDER BY `logs`.`pid` desc
+LIMIT 0, 12";
 
 if ($stmt = $conn->prepare($query)) {
 
@@ -104,8 +118,6 @@ $start = microtime(true);
     $stmt->execute();
 
 $end = microtime(true);
-
-
 
     $stmt->bind_result($id, $cl, $dpd3, $ph, $temp, $maq, $timedate, $log_owner);
 
@@ -144,6 +156,7 @@ $end = microtime(true);
 				else printf('<td class="text-warning" >%s</td>', $maq);
 			}
 
+			printf('<td class="text-muted">%s</td>', "");
 			printf('<td class="text-muted">%s</td>', $timedate);
 			printf('<td class="text-muted">%s</td>', $log_owner);
 			printf("</tr></tbody>");
@@ -159,10 +172,30 @@ $conn->close();
 	// echo "This query took " . ($end - $start) . " seconds.";
 	$difference = $end - $start;
 	printf("Query time: %.6f seconds.", $difference);
-	$queryTime = number_format($difference, 10);
-	echo "<br>Query time: $queryTime seconds.";
-
+	// $queryTime = number_format($difference, 10);
+	// echo "<br>Query time: $queryTime seconds.";
 	?>
+
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-end">
+    <li class="page-item">
+      <a class="page-link" href="#" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+        <span class="sr-only">Previous</span>
+      </a>
+    </li>
+    <li class="page-item"><a class="page-link" href="#">1</a></li>
+    <li class="page-item"><a class="page-link" href="#">2</a></li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li>
+    <li class="page-item">
+      <a class="page-link" href="#" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+        <span class="sr-only">Next</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
 </main>
 
 </div>

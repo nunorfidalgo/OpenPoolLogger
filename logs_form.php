@@ -5,12 +5,7 @@ if ( !isset($_SESSION["user"]) ) header( "Location: index.php" );
 error_reporting(E_ALL & ~E_NOTICE);
 require_once('config.php');
 
-// define variables and set to empty values
-// $nameErr = $emailErr = $genderErr = $websiteErr = "";
-// $name = $email = $gender = $comment = $website = "";
-
 $insert_count = 0;
-
 $inputClErr = $inputDpd3Err = $inputPhErr = $inputTempErr = $inputMaqErr = $inputLogTypeErr = "";
 $msg = $inputCl = $inputDpd3 = $inputPh = $inputTemp = $inputMaq = $inputLogType = "";
 
@@ -88,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else $insert_count++;
   }
 
-  if ( $insert_count >= 2 && ( !empty($inputCl) && !empty($inputDpd3) && !empty($inputPh) && !empty($inputTemp) && !empty($inputMaq) && !empty($inputLogType) )) {
+  if ( $insert_count >= 2 && ( !empty($inputCl) || !empty($inputDpd3) || !empty($inputPh) || !empty($inputTemp) || !empty($inputMaq) || !empty($inputLogType) )) {
     $conn = new mysqli($host, $user, $password, $dbname, $port, $socket)
     or die ('Could not connect to the database server' . mysqli_connect_error());
 
@@ -99,15 +94,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // echo "<br><br>";
 
     if( $conn->query($sql) == TRUE ) {
-      $msg = '<font class="text-success"> Novo registo adicionado com sucesso! </font>';
+      // $msg = '<font class="text-success"> Novo registo adicionado com sucesso! </font>';
+      $msg = '<div class="alert alert-success">
+        <strong>Sucesso!</strong> Novo registo adicionado.
+      </div>';
       $inputClErr = $inputDpd3Err = $inputPhErr = $inputTempErr = $inputMaqErr = $inputLogTypeErr = "";
       $inputCl = $inputDpd3 = $inputPh = $inputTemp = $inputMaq = $inputLogType = "";
     } else {
-      $msg = '<font class="text-danger"> Ocorreu um erro: '.$sql.'<br>'. $conn->error.' </font>';
+      // $msg = '<font class="text-danger"> Ocorreu um erro: '.$sql.'<br>'. $conn->error.' </font>';
+      $msg = '<div class="alert alert-warning">
+        <strong>Atenção!</strong> Ocorreu um erro: '.$sql.'<br>'. $conn->error.'
+      </div>';
     }
     $conn->close();
   } else {
-    $msg = '<font class="text-danger"> Nada a registar? (insert_count: '.$insert_count.')</font>';
+    // $msg = '<font class="text-danger"> Nada a registar? (insert_count: '.$insert_count.')</font>';
+    $msg = '<div class="alert alert-danger">
+      <strong>Erro!</strong> Nada a registar? (insert_count: '.$insert_count.')
+    </div>';
   }
 }
 
@@ -201,36 +205,13 @@ function test_input($data) {
     </div>
 
     <button class="btn btn-primary" name="submit" type="submit">Adicionar</button>
-  
-
-  <?php
-
-  if( !empty($msg) ) {
-    echo $msg;
-  }
-
-  // if ( $insert_count == 6 && ( !empty($inputCl) && !empty($inputDpd3) && !empty($inputPh) && !empty($inputTemp) && !empty($inputMaq) && !empty($inputLogType) )) {
-  //   $conn = new mysqli($host, $user, $password, $dbname, $port, $socket)
-  //   or die ('Could not connect to the database server' . mysqli_connect_error());
-
-  //   $sql="INSERT INTO `logs` (`pid`, `cl`, `dpd3`, `ph`, `temp`, `maq`, `timedate`, `log_owner`, `log_type`)
-  //   VALUES (NULL, '".$inputCl."', '".$inputDpd3."', '".$inputPh."', '".$inputTemp."', '".$inputMaq."', NOW(), '".$_SESSION['user']['fid']."', '".$inputLogType."')";
-
-  //   // echo $sql;
-  //   // echo "<br><br>";
-
-  //   if( $conn->query($sql) == TRUE ) {
-  //     echo '<font class="text-success"> Novo registo adicionado com sucesso! </font>';
-  //     $inputClErr = $inputDpd3Err = $inputPhErr = $inputTempErr = $inputMaqErr = $inputLogTypeErr = "";
-  //     $inputCl = $inputDpd3 = $inputPh = $inputTemp = $inputMaq = $inputLogType = "";
-  //   } else {
-  //     echo '<font class="text-danger"> Ocorreu um erro: '.$sql.'<br>'. $conn->error.' </font>';
-  //   }
-  //   $conn->close();
-  // } else {
-  //   echo '<font class="text-danger"> Nada a fazer! </font>';
-  // }
-  ?>
+    <br>
+    <br>
+    <?php
+    if( !empty($msg) ) {
+      echo $msg;
+    }
+    ?>
   </form>
 
 </main>

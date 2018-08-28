@@ -37,6 +37,35 @@ $_SESSION["sidebar"] = "";
         </select>
       </div>
     </div>
+		<div class="form-row">
+			<div class="form-group col-md-6">
+				<label for="inputCity"> Adicionar Tipo </label>
+				<input type="text" class="form-control" id="inputCity"  placeholder="Novo tipo" value="<?php //echo $_SESSION['settings']['entity']; ?>">
+			</div>
+
+			<div class="form-group col-md-6">
+				<label for="inputLogType">Tipo</label>
+				<select id="inputLogType" name="inputLogType" class="form-control" required>
+					<?php
+					require_once('config.php');
+					$conn = new mysqli($host, $user, $password, $dbname, $port, $socket)
+						or die ('Could not connect to the database server' . mysqli_connect_error());
+					$sql="SELECT `log_type`.`tid`, `log_type`.`name` FROM `log_type`";
+					$result = $conn->query($sql);
+					if ($result->num_rows > 0) {
+						echo "<option selected>Escolha...</option>";
+						while(	$row = $result->fetch_assoc() ) {
+							echo "<option value=".$row["tid"].">".$row["name"]."</option>";
+						}
+					} else {
+							echo "<option>Sem dados...</option>";
+					}
+					$conn->close();
+				?>
+				</select>
+			</div>
+
+		</div>
 
     <button type="submit" class="btn btn-primary">Salvar</button>
   </form>

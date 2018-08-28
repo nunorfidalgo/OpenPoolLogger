@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
 
-	<a class="navbar-brand" href="#"> OpenPoolLogger </a>
+	<a class="navbar-brand" href="<?php echo $_SERVER["HTTP_REFERER"]; ?>"> OpenPoolLogger </a>
 
 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"></span>

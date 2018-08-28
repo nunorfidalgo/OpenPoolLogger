@@ -24,7 +24,7 @@ $_SESSION["sidebar"] = "employers";
 		<h1 class="h2"> Funcionários </h1>
 
     <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-      <a class="btn btn-outline-secondary active" role="button" href="employers_form.php"> Adicionar </a>
+      <a class="btn btn-outline-secondary active" role="button" href="employers_form.php"><ion-icon name="add-circle-outline"></ion-icon>&nbsp;	Adicionar</a>
     </div>
 
 	</div>
@@ -33,14 +33,14 @@ $_SESSION["sidebar"] = "employers";
     <table class="table table-striped table-sm table-hover">
       <thead>
         <tr>
-          <th>#</th>
+          <!-- <th>#</th> -->
           <th>Nome completo</th>
           <th>Nome</th>
           <th>Email</th>
   				<th>Criado em</th>
           <th>Administrador</th>
-          <th>Editar</th>
-          <th>Remover</th>
+          <th><ion-icon name="build"></ion-icon></th>
+          <th><ion-icon name="trash"></ion-icon></th>
         </tr>
       </thead>
 
@@ -65,7 +65,7 @@ if ($stmt = $con->prepare($query)) {
         //printf("%s, %s\n", $field1, $field2);
 		printf("<tbody><tr>");
 
-    printf('<td class="text-muted"> %s </td>', $fid);
+    // printf('<td class="text-muted"> %s </td>', $fid);
 		printf("<td>%s</td> <td>%s</td> <td>%s</td>", $fullname, $username, $email);
     printf('<td class="text-muted"> %s </td>', $timedate);
 
@@ -73,8 +73,8 @@ if ($stmt = $con->prepare($query)) {
 			printf('<td class="text-muted"> Sim </td>');
 		else
 			printf('<td class="text-muted"> Não </td>');
-    printf('<td class="text-muted"> editar? </td>');
-    printf('<td class="text-muted"> X </td>');
+    printf('<td class="text-muted"> <ion-icon name="build"></ion-icon> </td>');
+    printf('<td class="text-muted"> <ion-icon name="trash"></ion-icon> </td>');
 		printf("</tr></tbody>");
     }
     $stmt->close();
