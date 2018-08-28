@@ -71,3 +71,5 @@ body {
 [role="main"] {
   padding-top: 80px; /* Space for fixed navbar */
 }
+
+.error {color: #FF0000;}

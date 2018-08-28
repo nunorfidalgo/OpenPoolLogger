@@ -23,6 +23,13 @@ $_SESSION["sidebar"] = "logs";
 
 		<h1 class="h2"> Registos </h1>
 
+		<?php
+		    if( isset($_SESSION["msg"]) && !empty($_SESSION["msg"]) ){
+		      echo $_SESSION["msg"];
+		    }
+		    echo $_SESSION["msg"] = "";
+		?>
+
 		<div class="btn-group" role="group">
 		  <a class="btn btn-outline-secondary" role="button" href="#"><ion-icon name="paper"></ion-icon> &nbsp; Exportar </a>
 		  <a class="btn btn-outline-secondary active" role="button" href="logs_form.php"> <ion-icon name="add-circle-outline"></ion-icon>&nbsp;	Adicionar </a>

@@ -5,11 +5,11 @@ if ( !isset($_SESSION["user"]) ) header( "Location: index.php" );
 error_reporting(E_ALL & ~E_NOTICE);
 require_once('config.php');
 
-$insert_count = 0;
 $inputClErr = $inputDpd3Err = $inputPhErr = $inputTempErr = $inputMaqErr = $inputLogTypeErr = "";
 $msg = $inputCl = $inputDpd3 = $inputPh = $inputTemp = $inputMaq = $inputLogType = "";
+$insert_count = 0;
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logadd-form") {
 
   if (!empty($_POST["inputCl"])) {
     $inputCl = test_input($_POST["inputCl"]);
@@ -95,24 +95,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if( $conn->query($sql) == TRUE ) {
       // $msg = '<font class="text-success"> Novo registo adicionado com sucesso! </font>';
-      $msg = '<div class="alert alert-success">
+      // $msg = '<div class="alert alert-success">
+      //   <strong>Sucesso!</strong> Novo registo adicionado.
+      // </div>';
+      $_SESSION["msg"] = '<div class="alert alert-success alert-dismissible fade show" role="alert">
         <strong>Sucesso!</strong> Novo registo adicionado.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>';
-      $inputClErr = $inputDpd3Err = $inputPhErr = $inputTempErr = $inputMaqErr = $inputLogTypeErr = "";
-      $inputCl = $inputDpd3 = $inputPh = $inputTemp = $inputMaq = $inputLogType = "";
+      // $inputClErr = $inputDpd3Err = $inputPhErr = $inputTempErr = $inputMaqErr = $inputLogTypeErr = "";
+      // $msg = $inputCl = $inputDpd3 = $inputPh = $inputTemp = $inputMaq = $inputLogType = "";
+      // $insert_count = 0;
     } else {
       // $msg = '<font class="text-danger"> Ocorreu um erro: '.$sql.'<br>'. $conn->error.' </font>';
-      $msg = '<div class="alert alert-warning">
-        <strong>Atenção!</strong> Ocorreu um erro: '.$sql.'<br>'. $conn->error.'
-      </div>';
+      // $msg = '<div class="alert alert-warning">
+      //   <strong>Atenção!</strong> Ocorreu um erro: '.$sql.'<br>'. $conn->error.'
+      // </div>';
+      $_SESSION["msg"] = '<div class="alert alert-warning alert-dismissible fade show" role="alert">
+	      <strong>Ups!</strong> Ocorreu um erro: '.$sql.'<br>'. $conn->error.'
+	      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	        <span aria-hidden="true">&times;</span>
+	      </button>
+	    </div>';
     }
     $conn->close();
   } else {
     // $msg = '<font class="text-danger"> Nada a registar? (insert_count: '.$insert_count.')</font>';
-    $msg = '<div class="alert alert-danger">
-      <strong>Erro!</strong> Nada a registar? (insert_count: '.$insert_count.')
-    </div>';
+    // $msg = '<div class="alert alert-danger">
+    //   <strong>Erro!</strong> Nada a registar? (insert_count: '.$insert_count.')
+    // </div>';
+    $_SESSION["msg"] = '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+			<strong>Erro!</strong> Nada a registar? (insert_count: '.$insert_count.')
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>';
   }
+	header( "Location: logs.php" );
 }
 
 function test_input($data) {
@@ -127,9 +147,6 @@ function test_input($data) {
 <html lang="en">
 
 <?php include_once('header.php'); ?>
-<style>
-.error {color: #FF0000;}
-</style>
 
 <body>
 
@@ -204,13 +221,13 @@ function test_input($data) {
 
     </div>
 
-    <button class="btn btn-primary" name="submit" type="submit">Adicionar</button>
+    <button class="btn btn-primary" name="submit" value="logadd-form" type="submit">Adicionar</button>
     <br>
     <br>
     <?php
-    if( !empty($msg) ) {
-      echo $msg;
-    }
+    // if( !empty($msg) ) {
+    //   echo $msg;
+    // }
     ?>
   </form>
 

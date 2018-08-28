@@ -76,20 +76,25 @@ CREATE TABLE IF NOT EXISTS `settings` (
 );
 
 INSERT INTO `employers` (`eid`, `fullname`, `username`, `password`, `email`, `admin`, `timedate`) VALUES
-( NULL, 'administrador', 'admin', sha1('teste'), 'admin@pool.lan', '1', NOW() ),
-( NULL, 'Nuno Fidalgo', 'user1', sha1('teste1'), 'user1@pool.lan', '0', NOW() );
+-- ( NULL, 'administrador', 'admin', sha1('teste'), 'admin@pool.lan', '1', NOW() ),
+( NULL, 'Nuno Fidalgo', 'Fidalgo', sha1('admin#2018'), 'nunorfidalgo@gmail.com', '1', NOW() ),
+( NULL, 'Liliana Sousa', 'Liliana', sha1('piscina#2018'), 'lilianasousa@goodfit.pt', '1', NOW() ),
+( NULL, 'Fabio Direito', 'Fabio', sha1('piscina#2018'), 'fabiodireito@goodfit.pt', '1', NOW() ),
+( NULL, 'Nuno Ferreira', 'Nuno', sha1('piscina#2018'), 'nunoferreira@goodfit.pt', '1', NOW() ),
+( NULL, 'Moisés Direito', 'Moisés', sha1('piscina#2018'), 'moisesdireito@goodfit.pt', '0', NOW() ),
+( NULL, 'Marisa Sa', 'Marisa', sha1('piscina#2018'), 'marisasa@goodfit.pt', '0', NOW() ),
 
 INSERT INTO `log_type` (`tid`, `name`, `record_time`) VALUES
 ( NULL, 'Piscina', NOW() ),
 ( NULL, 'Jacuzzi', NOW() );
 
-INSERT INTO `logs` (`lid`, `cl`, `dpd3`, `ph`, `temp`, `maq`, `timedate`, `log_owner`, `log_type`) VALUES
-(NULL, '1.05', '2.30', '7.66', '30', '479', NOW(), '2', '1'),
-(NULL, '0.20', '0.54', '7.44', '30', NULL, NOW(), '2', '1'),
-(NULL, '0.50', '1.71', '7.48', '30', '453', NOW(), '2', '1'),
-(NULL, '0.70', '2.22', '7.56', '30', '516', NOW(), '2', '1'),
-(NULL, '0.70', '0.97', '7.54', '30', '516', NOW(), '2', '1'),
-(NULL, '8.98', '0.22', '6.32', '14', '800', NOW(), '2', '2');
+-- INSERT INTO `logs` (`lid`, `cl`, `dpd3`, `ph`, `temp`, `maq`, `timedate`, `log_owner`, `log_type`) VALUES
+-- (NULL, '1.05', '2.30', '7.66', '30', '479', NOW(), '2', '1'),
+-- (NULL, '0.20', '0.54', '7.44', '30', NULL, NOW(), '2', '1'),
+-- (NULL, '0.50', '1.71', '7.48', '30', '453', NOW(), '2', '1'),
+-- (NULL, '0.70', '2.22', '7.56', '30', '516', NOW(), '2', '1'),
+-- (NULL, '0.70', '0.97', '7.54', '30', '516', NOW(), '2', '1'),
+-- (NULL, '8.98', '0.22', '6.32', '14', '800', NOW(), '2', '2');
 
 INSERT INTO `settings` (`sid`, `entity`, `lang`, `record_time`) VALUES
 ( NULL, 'Good Fit, Lda', '1', NOW() );

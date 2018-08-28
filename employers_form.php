@@ -3,7 +3,6 @@ session_start();
 if ( !isset($_SESSION["user"]) ) header( "Location: index.php" );
 $_SESSION["sidebar"] = "";
 
-
 error_reporting(E_ALL & ~E_NOTICE);
 require_once('config.php');
 
@@ -11,85 +10,118 @@ $insert_count = 0;
 $inputFullnameErr = $inputUsernameErr = $inputPasswordErr = $inputEmailErr = $inputEmailErr = $inputAdminErr = "";
 $msg = $inputFullname = $inputUsername = $inputPassword = $inputEmail = $inputEmail = $inputAdmin = "";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "employeradd-form" ) {
 
-	if (empty($_POST["$inputFullname"])) {
+	if (empty($_POST["inputFullname"])) {
 		$inputFullnameErr = "* Nome completo é obrigatório.";
-	}
-  //   $inputCl = test_input($_POST["$inputFullname"]);
-  //   if (!preg_match("/^[a-zA-Z ]*$/", $inputFullname) ) {
-  //     $inputFullnameErr = "* Apenas letras e espaçoes permitidos.";
-  //     $insert_count--;
-  //   } else $insert_count++;
-  // }
+	} else {
+    $inputFullname = test_input($_POST["inputFullname"]);
+    if (!preg_match("/^[a-zA-Z ]*$/", $inputFullname) ) {
+      $inputFullnameErr = "* Apenas letras e espaçoes permitidos.";
+      $insert_count--;
+    } else $insert_count++;
+  }
 
-	if (empty($_POST["$inputUsername"])) {
+	if (empty($_POST["inputUsername"])) {
 		$inputUsernameErr = "* Username é obrigatório.";
-	}
-  //   $inputCl = test_input($_POST["$inputUsername"]);
-  //   if (!preg_match("/^[a-zA-Z ]*$/", $inputUsername) ) {
-  //     $inputUsernameErr = "* Apenas letras e espaçoes permitidos.";
-  //     $insert_count--;
-  //   } else $insert_count++;
-  // }
+	} else {
+    $inputUsername = test_input($_POST["inputUsername"]);
+    if (!preg_match("/^[a-zA-Z ]*$/", $inputUsername) ) {
+      $inputUsernameErr = "* Apenas letras e espaçoes permitidos.";
+      $insert_count--;
+    } else $insert_count++;
+  }
 
-	if (empty($_POST["$inputPassword"])) {
+	if (empty($_POST["inputPassword"])) {
 		$inputPasswordErr = "* Password é obrigatório.";
-	}
-  //   $inputCl = test_input($_POST["$inputPassword"]);
-  //   if (!preg_match("/^[a-zA-Z ]*$/", $inputPassword) ) {
-  //     $inputPasswordErr = "* Apenas letras e espaçoes permitidos.";
-  //     $insert_count--;
-  //   } else $insert_count++;
-  // }
+	} else {
+    $inputPassword = test_input($_POST["inputPassword"]);
+    if (!preg_match("/^[a-zA-Z ]*$/", $inputPassword) ) {
+      $inputPasswordErr = "* Apenas letras e espaçoes permitidos.";
+      $insert_count--;
+    } else $insert_count++;
+  }
 
-	if (empty($_POST["$inputEmail"])) {
+	if (empty($_POST["inputEmail"])) {
 		$inputEmailErr = "* Email é obrigatório.";
+	} else {
+		$inputEmail = test_input($_POST["inputEmail"]);
+		// check if e-mail address is well-formed
+		if (!filter_var($inputEmail, FILTER_VALIDATE_EMAIL)) {
+		 $inputEmailErr = "* Formato email invalido.";
+		 $insert_count--;
+		} else $insert_count++;
 	}
-	// } else {
-	// 	$inputEmail = test_input($_POST["$inputEmail"]);
-	// 	// check if e-mail address is well-formed
-	// 	if (!filter_var($inputEmail, FILTER_VALIDATE_EMAIL)) {
-	// 	 $inputEmailErr = "* Formato email invalido.";
-	// 	 $insert_count--;
-	// 	} else $insert_count++;
-	// }
 
-	if (empty($_POST["$inputAdmin"])) {
+	if (!isset($_POST["inputAdmin"])) {
     $inputAdmin = "0";
 		$insert_count++;
 	} else {
-    $inputAdmin = test_input($_POST["$inputAdmin"]);
-		$insert_count++;
+    // $inputAdmin = test_input($_POST["$inputAdmin"]);
 		$inputAdmin = "1";
+		$insert_count++;
 	}
 
-	if ( $insert_count == 4 && ( !empty($inputFullname) || !empty($inputUsername) || !empty($inputPassword) || !empty($inputEmail) || !empty($inputAdmin) )) {
+	print_r($_POST);
+	//
+	// echo '<br>'.$inputFullname;
+	// echo '<br>'.$inputUsername;
+	// echo '<br>'.$inputPassword;
+	// echo '<br>'.$inputEmail;
+	// echo '<br>'.$inputEmail;
+	// echo '<br>'.$inputAdmin;
+
+	if ( $insert_count == 5  ) { // && (!empty($inputFullname) && !empty($inputUsername) && !empty($inputPassword) && !empty($inputEmail) && !empty($inputAdmin))
     $conn = new mysqli($host, $user, $password, $dbname, $port, $socket)
     or die ('Could not connect to the database server' . mysqli_connect_error());
 
 		$sql="INSERT INTO `employers` (`fid`, `fullname`, `username`, `password`, `email`, `admin`, `timedate`)
 		VALUES (NULL, '".$inputFullname."', '".$inputUsername."', SHA1('".$inputPassword."'), '".$inputEmail."', '".$inputAdmin."', NOW() )";
 
-    $msg = $sql;
+echo '<br>'.$sql;
+die();
+
+    // $msg = $sql;
 
     if( $conn->query($sql) == TRUE ) {
-      $msg = '<div class="alert alert-success">
-        <strong>Sucesso!</strong> Novo registo adicionado.
-      </div>';
-			$inputFullnameErr = $inputUsernameErr = $inputPasswordErr = $inputEmailErr = $inputEmailErr = $inputAdminErr = "";
-			$inputFullname = $inputUsername = $inputPassword = $inputEmail = $inputEmail = $inputAdmin = "";
+      // $msg = '<div class="alert alert-success">
+      //   <strong>Sucesso!</strong> Novo registo adicionado.
+      // </div>';
+			$_SESSION["msg"] = '<div class="alert alert-success alert-dismissible fade show" role="alert">
+	      <strong>Sucesso!</strong> Novo funcionário adicionado.
+	      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	        <span aria-hidden="true">&times;</span>
+	      </button>
+	    </div>';
+// 			$inputFullnameErr = $inputUsernameErr = $inputPasswordErr = $inputEmailErr = $inputEmailErr = $inputAdminErr = "";
+// 			$inputFullname = $inputUsername = $inputPassword = $inputEmail = $inputEmail = $inputAdmin = "";
+// 			$insert_count = 0;
+// 			$_POST["inputFullname"] = $_POST["inputUsername"] = $_POST["inputPassword"] = $_POST["inputEmail"] = $_POST["inputEmail"] = $_POST["inputAdmin"] = "";
+// // filter_var_array($_POST, FILTER_SANITIZE_STRING);
     } else {
-      $msg = '<div class="alert alert-warning">
-        <strong>Atenção!</strong> Ocorreu um erro: '.$sql.'<br>'. $conn->error.'
-      </div>';
+      // $msg = '<div class="alert alert-warning">
+      //   <strong>Atenção!</strong> Ocorreu um erro: '.$sql.'<br>'. $conn->error.'
+      // </div>';
+			$_SESSION["msg"] = '<div class="alert alert-warning alert-dismissible fade show" role="alert">
+	      <strong>Ups!</strong> Ocorreu um erro: '.$sql.'<br>'. $conn->error.'
+	      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	        <span aria-hidden="true">&times;</span>
+	      </button>
+	    </div>';
     }
     $conn->close();
   } else {
-    $msg = '<div class="alert alert-danger">
-      <strong>Erro!</strong> Nada a registar? (insert_count: '.$insert_count.') <br> SQL: '.$sql.'
-    </div>';
+    // $msg = '<div class="alert alert-danger">
+    //   <strong>Erro!</strong> Nada a registar? (insert_count: '.$insert_count.') <br> SQL: '.$sql.'
+    // </div>';
+		$_SESSION["msg"] = '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+			<strong>Erro!</strong> Nada a registar? (insert_count: '.$insert_count.')
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>';
   }
+	header( "Location: employers.php" );
 }
 
 function test_input($data) {
@@ -124,7 +156,7 @@ function test_input($data) {
 		<div class="form-group row">
 	    <label for="nome_completo" class="col-sm-2 col-form-label">Nome completo</label>
 	    <div class="col-sm-10">
-	      <input type="text" class="form-control" id="inputFullname" name="inputFullname" placeholder="Zé Manel" required value="<?php echo $inputUsername;?>">
+	      <input type="text" class="form-control" id="inputFullname" name="inputFullname" placeholder="Zé Manel" required value="<?php echo $inputFullname;?>">
           <span class="error"><?php echo $inputFullnameErr?></span>
 				<!-- <div class="valid-tooltip">
 				    Parece bem!
@@ -172,15 +204,15 @@ function test_input($data) {
 	  </div>
 	  <div class="form-group row">
 	    <div class="col-sm-10">
-	      <button type="submit" class="btn btn-primary"> <ion-icon name="add-circle-outline"></ion-icon>&nbsp;Adicionar </button>
+	      <button name="submit" value="employeradd-form" type="submit" class="btn btn-primary"> <ion-icon name="add-circle-outline"></ion-icon>&nbsp;Adicionar </button>
 	    </div>
 	  </div>
 		<br>
-    <br>
     <?php
-    if( !empty($msg) ) {
-      echo $msg;
-    }
+    // if( !empty($msg) ) {
+    //   echo $msg;
+		// 	$msg = "";
+    // }
     ?>
 	</form>
 
