@@ -2,15 +2,32 @@
 session_start();
 if ( !isset($_SESSION["user"]) ) header( "Location: index.php" );
 $_SESSION["sidebar"] = "";
+$_SESSION["menu"] = ""; // see on edit-employer-form
 
 error_reporting(E_ALL & ~E_NOTICE);
 require_once('config.php');
+
+// print_r($_POST);
+// die();
 
 $insert_count = 0;
 $inputFullnameErr = $inputUsernameErr = $inputPasswordErr = $inputEmailErr = $inputEmailErr = $inputAdminErr = "";
 $msg = $inputFullname = $inputUsername = $inputPassword = $inputEmail = $inputEmail = $inputAdmin = "";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "employeradd-form" ) {
+/**************************************
+* edit-employer-form
+**************************************/
+if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "edit-employer-form" ) {
+	$_SESSION["menu"] = "employer-form";
+	// echo "aqui";
+	// print_r($_POST);
+	// die();
+} // end edit-employer-form
+
+/**************************************
+* add-employer-form-submit
+**************************************/
+if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "add-employer-form-submit" ) {
 
 	if (empty($_POST["inputFullname"])) {
 		$inputFullnameErr = "* Nome completo é obrigatório.";
@@ -122,7 +139,13 @@ die();
 		</div>';
   }
 	header( "Location: employers.php" );
-}
+} // end add-employer-form-submit
+
+/**************************************
+* edit-employer-form-submit
+**************************************/
+if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "edit-employer-form-submit" ) {
+} // end edit-employer-form-submit
 
 function test_input($data) {
   $data = trim($data);
@@ -148,15 +171,25 @@ function test_input($data) {
 
 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
 	<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-		<h1 class="h2"> Registar novo funcionário </h1>
+
+		<h1 class="h2">
+			<?php
+			if( $_POST["submit"] == "edit-employer-form" ){
+				echo "Alterar funcionário";
+				// print_r($_SESSION["user"]);
+			} else {
+				echo "Novo funcionário";
+			}
+			?>
+		</h1>
   </div>
 
-	<form id="employeradd-form" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" role="form">
+	<form id="add-employer-form" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" role="form">
 
 		<div class="form-group row">
 	    <label for="nome_completo" class="col-sm-2 col-form-label">Nome completo</label>
 	    <div class="col-sm-10">
-	      <input type="text" class="form-control" id="inputFullname" name="inputFullname" placeholder="Zé Manel" required value="<?php echo $inputFullname;?>">
+	      <input type="text" class="form-control" id="inputFullname" name="inputFullname" placeholder="Zé Manel" required value="<?php	if( $_POST['submit'] == 'edit-employer-form' ) echo $_SESSION['user']['fullname']; else echo $inputFullname; ?>">
           <span class="error"><?php echo $inputFullnameErr?></span>
 				<!-- <div class="valid-tooltip">
 				    Parece bem!
@@ -167,7 +200,7 @@ function test_input($data) {
 		<div class="form-group row">
 	    <label for="username" class="col-sm-2 col-form-label">Username</label>
 	    <div class="col-sm-10">
-	      <input type="text" class="form-control" id="inputUsername" name="inputUsername" placeholder="ze123" required value="<?php echo $inputUsername;?>">
+	      <input type="text" class="form-control" id="inputUsername" name="inputUsername" placeholder="ze123" required value="<?php	if( $_POST['submit'] == 'edit-employer-form' ) echo $_SESSION['user']['username']; else echo $inputUsername; ?>">
           <span class="error"><?php echo $inputUsernameErr?></span>
 				<!-- <div class="valid-tooltip">
 				    Parece bem!
@@ -178,7 +211,7 @@ function test_input($data) {
 		<div class="form-group row">
 	    <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
 	    <div class="col-sm-10">
-	      <input type="password" class="form-control" id="inputPassword" name="inputPassword" placeholder="Password" required value="<?php echo $inputPassword;?>">
+	      <input type="password" class="form-control" id="inputPassword" name="inputPassword" placeholder="Password" required value="<?php	if( $_POST['submit'] == 'edit-employer-form' ) echo $_SESSION['user']['password']; else echo $inputPassword; ?>">
           <span class="error"><?php echo $inputPasswordErr?></span>
 	    </div>
 	  </div>
@@ -186,7 +219,7 @@ function test_input($data) {
 		<div class="form-group row">
 	    <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
 	    <div class="col-sm-10">
-	      <input type="email" class="form-control" id="inputEmail" name="inputEmail" placeholder="Email" required value="<?php echo $inputEmail;?>">
+	      <input type="email" class="form-control" id="inputEmail" name="inputEmail" placeholder="Email" required value="<?php	if( $_POST['submit'] == 'edit-employer-form' ) echo $_SESSION['user']['email']; else echo $inputEmail; ?>">
           <span class="error"><?php echo $inputEmailErr?></span>
 	    </div>
 	  </div>
@@ -195,8 +228,9 @@ function test_input($data) {
 	    <div class="col-sm-2">Checkbox</div>
 	    <div class="col-sm-10">
 	      <div class="form-check">
-	        <input class="form-check-input" type="checkbox" id="inputAdmin" name="inputAdmin">
-	        <label class="form-check-label" for="admin">
+
+	        <input class="form-check-input" type="checkbox" id="inputAdmin" name="inputAdmin" <?php	if( $_POST['submit'] == 'edit-employer-form' && $_SESSION['user']['admin'] == 1 ) echo 'checked'; ?>>
+	        <label class="form-check-label" for="inputAdmin">
 	          Admin
 	        </label>
 	      </div>
@@ -204,7 +238,15 @@ function test_input($data) {
 	  </div>
 	  <div class="form-group row">
 	    <div class="col-sm-10">
-	      <button name="submit" value="employeradd-form" type="submit" class="btn btn-primary"> <ion-icon name="add-circle-outline"></ion-icon>&nbsp;Adicionar </button>
+	      <button name="submit" value="employer-add-form" type="submit" class="btn btn-primary">
+					<?php
+						if( $_POST['submit'] == 'edit-employer-form' )
+							echo '<ion-icon name="save"></ion-icon>&nbsp; Guardar';
+						else
+							echo '<ion-icon name="add-circle-outline"></ion-icon>&nbsp;Adicionar';
+					?>
+
+				</button>
 	    </div>
 	  </div>
 		<br>

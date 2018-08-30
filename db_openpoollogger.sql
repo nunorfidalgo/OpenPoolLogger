@@ -1,32 +1,6 @@
 --- cloro -> chlorine
 --- cloramina -> chloramine
 
-/* CREATE TABLE IF NOT EXISTS `funcionarios` (
-  `fid` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `fullname` varchar(128) NOT NULL,
-  `username` varchar(32) NOT NULL,
-  `password` varchar(40) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `admin` tinyint(1) NOT NULL default '0',
-  `datahora` datetime NOT NULL,
-  PRIMARY KEY  (`fid`),
-  UNIQUE KEY `fid` (`fid`)
-);
-
-CREATE TABLE IF NOT EXISTS `parametros` (
-  `pid` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `cloro` float,
-  `dpd3` float,
-  `ph` float,
-  `temperatura` float,
-  `maq` int,
-  `datahora` datetime NOT NULL,
-  `responsavel` bigint(20) UNSIGNED NOT NULL,
-  PRIMARY KEY  (`pid`),
-  UNIQUE KEY `pid` (`pid`),
-  FOREIGN KEY (`responsavel`) REFERENCES funcionarios(`fid`)
-); */
-
 CREATE TABLE IF NOT EXISTS `employers` (
   `eid` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `fullname` varchar(128) NOT NULL,
@@ -69,11 +43,25 @@ CREATE TABLE IF NOT EXISTS `log_type` (
 CREATE TABLE IF NOT EXISTS `settings` (
   `sid` tinyint UNSIGNED NOT NULL AUTO_INCREMENT,
   `entity` varchar(32),
-  `lang` tinyint,
+  `lang` varchar(5),
   `record_time` datetime NOT NULL,
   PRIMARY KEY  (`sid`),
   UNIQUE KEY `sid` (`sid`)
 );
+
+CREATE TABLE IF NOT EXISTS `settings_param` (
+  `spid` tinyint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `param` varchar(12),
+  `param_min` float UNSIGNED,
+  `param_max` float UNSIGNED,
+  `record_time` datetime NOT NULL,
+  PRIMARY KEY  (`spid`),
+  UNIQUE KEY `spid` (`spid`)
+);
+
+
+
+
 
 INSERT INTO `employers` (`eid`, `fullname`, `username`, `password`, `email`, `admin`, `timedate`) VALUES
 -- ( NULL, 'administrador', 'admin', sha1('teste'), 'admin@pool.lan', '1', NOW() ),
@@ -96,10 +84,15 @@ INSERT INTO `log_type` (`tid`, `name`, `record_time`) VALUES
 -- (NULL, '0.70', '0.97', '7.54', '30', '516', NOW(), '2', '1'),
 -- (NULL, '8.98', '0.22', '6.32', '14', '800', NOW(), '2', '2');
 
-INSERT INTO `settings` (`sid`, `entity`, `lang`, `record_time`) VALUES
-( NULL, 'Good Fit, Lda', '1', NOW() );
+INSERT INTO `settings` (`sid`, `entity`, `entity_url`, `lang`, `record_time`) VALUES
+( NULL, 'Good Fit, Lda', 'https://www.goodfit.pt', 'pt-pt', NOW() );
 
-
+INSERT INTO `settings_param` (`spid`, `param`, `param_min`, `param_max`, `record_time`) VALUES
+( NULL, 'cl', '0.00', '2.00', NOW() ),
+( NULL, 'dpd3', '0.00', '2.00', NOW() ),
+( NULL, 'ph', '0.00', '14.00', NOW() ),
+( NULL, 'temp', '0.00', '50.00', NOW() ),
+( NULL, 'maq', '1', '999', NOW() );
 
 
 
@@ -121,10 +114,7 @@ $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
 
 //$con->close();
 
-
-
 $query = "";
-
 
 if ($stmt = $con->prepare($query)) {
     $stmt->execute();

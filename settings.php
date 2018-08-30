@@ -1,6 +1,7 @@
 <?php
 session_start();
 if ( !isset($_SESSION["user"]) ) header( "Location: index.php" );
+$_SESSION["menu"] = "settings";
 $_SESSION["sidebar"] = "";
 ?>
 
@@ -27,22 +28,29 @@ $_SESSION["sidebar"] = "";
     <div class="form-row">
       <div class="form-group col-md-6">
         <label for="inputCity"> Entidade </label>
-        <input type="text" class="form-control" id="inputCity"  placeholder="Entidade" value="<?php echo $_SESSION['settings']['entity']; ?>">
+        <input type="text" class="form-control" id="inputEntity"  placeholder="Entidade" value="<?php echo $_SESSION['settings']['entity']; ?>">
       </div>
-      <div class="form-group col-md-6">
-        <label for="inputState">Língua</label>
-        <select id="inputState" class="form-control">
-          <option value="1" selected>Português</option>
-          <option value="2">Inglês</option>
-        </select>
+			<div class="form-group col-md-6">
+        <label for="inputCity"> Website </label>
+        <input type="text" class="form-control" id="inputEntityUrl"  placeholder="Website" value="<?php echo "em falta..."; //$_SESSION['settings']['inputEntityUrl']; ?>">
       </div>
     </div>
+
+		<div class="form-row">
+			<div class="form-group col-md-6">
+				<label for="inputState">Língua</label>
+				<select id="inputState" class="form-control">
+					<option value="1" selected>Português</option>
+					<option value="2">Inglês</option>
+				</select>
+			</div>
+		</div>
+
 		<div class="form-row">
 			<div class="form-group col-md-6">
 				<label for="inputCity"> Adicionar Tipo </label>
-				<input type="text" class="form-control" id="inputCity"  placeholder="Novo tipo" value="<?php //echo $_SESSION['settings']['entity']; ?>">
+				<input type="text" class="form-control" id="inputCity"  placeholder="Novo tipo" value="<?php echo "em falta...";//echo $_SESSION['settings']['entity']; ?>">
 			</div>
-
 			<div class="form-group col-md-6">
 				<label for="inputLogType">Tipo</label>
 				<select id="inputLogType" name="inputLogType" class="form-control" required>
@@ -64,10 +72,58 @@ $_SESSION["sidebar"] = "";
 				?>
 				</select>
 			</div>
-
 		</div>
 
-    <button type="submit" class="btn btn-primary">Salvar</button>
+		<div class="form-group row">
+			<label for="inputEmail3" class="col-sm-2 col-form-label"> Cloro </label>
+			<div class="col-sm-2">
+			  <input type="email" class="form-control" id="inputEmail3" placeholder="Min">
+			</div>
+			<div class="col-sm-2">
+			 <input type="email" class="form-control" id="inputEmail3" placeholder="Max">
+			</div>
+		</div>
+	 <div class="form-group row">
+		 <label for="inputEmail3" class="col-sm-2 col-form-label"> DPD3 </label>
+		 <div class="col-sm-2">
+			 <input type="email" class="form-control" id="inputEmail3" placeholder="Min">
+		 </div>
+		 	<div class="col-sm-2">
+				<input type="email" class="form-control" id="inputEmail3" placeholder="Max">
+			</div>
+	  </div>
+
+		<div class="form-group row">
+			<label for="inputEmail3" class="col-sm-2 col-form-label"> pH </label>
+			<div class="col-sm-2">
+				<input type="email" class="form-control" id="inputEmail3" placeholder="Min">
+			</div>
+		 <div class="col-sm-2">
+			 <input type="email" class="form-control" id="inputEmail3" placeholder="Max">
+		 </div>
+	 </div>
+
+	 <div class="form-group row">
+		 <label for="inputEmail3" class="col-sm-2 col-form-label"> Temperatura </label>
+		 <div class="col-sm-2">
+			 <input type="email" class="form-control" id="inputEmail3" placeholder="Min">
+		 </div>
+		<div class="col-sm-2">
+			<input type="email" class="form-control" id="inputEmail3" placeholder="Max">
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label for="inputEmail3" class="col-sm-2 col-form-label"> Maq </label>
+		<div class="col-sm-2">
+			<input type="email" class="form-control" id="inputEmail3" placeholder="Min">
+		</div>
+		<div class="col-sm-2">
+			<input type="email" class="form-control" id="inputEmail3" placeholder="Max">
+		</div>
+	</div>
+
+	<button type="submit" class="btn btn-primary">Salvar</button>
   </form>
 
 <?php

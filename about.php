@@ -2,6 +2,7 @@
 session_start();
 if ( !isset($_SESSION["user"]) ) header( "Location: index.php" );
 $_SESSION["sidebar"] = "";
+$_SESSION["menu"] = "about";
 ?>
 
 <!doctype html>
@@ -25,17 +26,24 @@ $_SESSION["sidebar"] = "";
 
 	</div>
 
-  <!-- <div class="table-responsive">
+  <div class="table-responsive">
 
-	</div> -->
+    <div class="jumbotron">
+      <h1 class="display-4">Olá e bem-vindo ao OpenPoolLogger.</h1>
+      <br>
+      <p class="lead"> O âmbito desta aplicação Web será de guardar registos dos valores dos parametros da água de que temos nas piscinas, Jacuzzi's, entre outros.
+        De momento os parametros guardados são o cloro, o DPD3, o pH, a temperatura, os watts, hora do registo e quem efectou o registo, sendo que de seguida podemos
+        introduzir o valor de correção do cloro (em kg). Estes valores têm uma relação entre si, mostrados em cores, assim como os valores favoraveis que fazem o
+        sistema da piscina funcionar da melhor forma.
+        Após alguns registos temos acesso a gráficos que mostram de forma rápida a evolução destes parametros e como consequencia o estado geral da última semana, mês, etc...
+      </p>
+      <br>
+      <hr class="my-4">
+      <p> Visite a página do projeto no GitHub:</p>
+      <a class="btn btn-primary btn-lg" href="https://github.com/nunorfidalgo/OpenPoolLogger" role="button"> <ion-icon name="logo-github"></ion-icon> GitHub: OpenPoolLogger</a>
+  	</div>
 
-  <div class="jumbotron">
-  <h1 class="display-4">Hello, world!</h1>
-  <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
-  <hr class="my-4">
-  <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-  <!-- <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a> -->
-</div>
+  </div>
 
 </main>
 

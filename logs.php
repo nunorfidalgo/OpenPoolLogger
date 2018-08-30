@@ -1,7 +1,9 @@
 <?php
+$page_start = microtime(true);
 session_start();
 if ( !isset($_SESSION["user"]) ) header( "Location: index.php" );
 $_SESSION["sidebar"] = "logs";
+$_SESSION["menu"] = "";
 ?>
 
 <!doctype html>
@@ -178,9 +180,12 @@ $conn->close();
 	<?php
 	// echo "This query took " . ($end - $start) . " seconds.";
 	$difference = $end - $start;
-	printf("Query time: %.6f seconds.", $difference);
+	printf("Tempo pesquisa: %.6f seconds.", $difference);
 	// $queryTime = number_format($difference, 10);
 	// echo "<br>Query time: $queryTime seconds.";
+
+
+
 	?>
 
 <nav aria-label="Page navigation example">
@@ -208,7 +213,11 @@ $conn->close();
 </div>
 </div>
 
-<?php include_once('footer.php'); ?>
+<?php include_once('footer.php');
+$page_end = microtime(true);
+$page_render_diff = $page_end - $page_start;
+printf("Tempo renderização página: %.6f seconds.", $page_render_diff);
+?>
 
 <script>
 $(function () {

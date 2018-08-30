@@ -2,6 +2,7 @@
 session_start();
 if ( !isset($_SESSION["user"]) ) header( "Location: index.php" );
 $_SESSION["sidebar"] = "employers";
+$_SESSION["menu"] = "";
 ?>
 
 <!doctype html>
@@ -29,7 +30,7 @@ $_SESSION["sidebar"] = "employers";
         }
         echo $_SESSION["msg"] = "";
     ?>
-    
+
     <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
       <a class="btn btn-outline-secondary active" role="button" href="employers_form.php"><ion-icon name="add-circle-outline"></ion-icon>&nbsp;	Adicionar</a>
     </div>

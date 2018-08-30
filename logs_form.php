@@ -1,6 +1,8 @@
 <?php
 session_start();
 if ( !isset($_SESSION["user"]) ) header( "Location: index.php" );
+$_SESSION["sidebar"] = "";
+$_SESSION["menu"] = "";
 
 error_reporting(E_ALL & ~E_NOTICE);
 require_once('config.php');

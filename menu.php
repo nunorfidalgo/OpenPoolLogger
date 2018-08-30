@@ -9,10 +9,10 @@
 	<div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
 		<ul class="navbar-nav">
 			<li class="nav-item">
-        <a class="nav-link active"> <?php echo $_SESSION['settings']['entity']; ?> <span class="sr-only">(current)</span></a>
+        <a class="nav-link <?php if ($_SESSION['menu'] != "about" ) echo "active"; ?>" href="https://www.goodfit.pt"> <?php echo $_SESSION['settings']['entity']; ?> </a> <!-- <span class="sr-only">(current)</span> -->
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="about.php"> Sobre </a>
+        <a class="nav-link <?php if ($_SESSION['menu'] == "about" ) echo "active"; ?>" href="about.php"> Sobre </a>
       </li>
 
 		  <li class="nav-item dropdown">
@@ -20,11 +20,17 @@
  	 		<?php echo $_SESSION['user']['fullname']; ?>
 			</a>
 			<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-				<a class="dropdown-item" href="settings.php"> Configurações </a>
-				<a class="dropdown-item" href="employers_register.php"> Perfil </a>
+				<a class="dropdown-item <?php if ($_SESSION['menu'] == "settings" ) echo "active"; ?>" href="settings.php"> Configurações </a>
+
+				<form class="form" id="edit-employer-form" method="post" action="employers_form.php" role="form">
+					<!-- <input type="text" class="form-control" id="inputTest" name="inputTest" placeholder="Zé Manel" required value="Test"> -->
+					<button class="dropdown-item <?php if ($_SESSION['menu'] == "employer-form" ) echo "active"; ?>" type="submit" name="submit" value="edit-employer-form"> Perfil </button>
+				</form>
+
 				<form class="form" id="logout-form" method="post" action="logout.php" role="form">
 			  	<button class="dropdown-item btn btn-primary btn-block" type="submit" href="#"> Sair </button>
 				</form>
+
 			</div>
 		  </li>
 		</ul>
