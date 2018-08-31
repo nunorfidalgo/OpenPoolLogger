@@ -25,16 +25,16 @@ $_SESSION["menu"] = "";
 		<h1 class="h2"> Funcionários </h1>
 
     <?php
-        if( isset($_SESSION["msg"]) && !empty($_SESSION["msg"]) ){
-          echo $_SESSION["msg"];
-        }
-        echo $_SESSION["msg"] = "";
+      if( isset($_SESSION["msg"]) && !empty($_SESSION["msg"]) ){
+        echo $_SESSION["msg"];
+      }
+      echo $_SESSION["msg"] = "";
+
+      if( $_SESSION['user']['admin'] == "1")
+      echo '<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+        <a class="btn btn-outline-secondary active" role="button" href="employers_form.php"><ion-icon name="add-circle-outline"></ion-icon>&nbsp;	Adicionar</a>
+      </div>';
     ?>
-
-    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-      <a class="btn btn-outline-secondary active" role="button" href="employers_form.php"><ion-icon name="add-circle-outline"></ion-icon>&nbsp;	Adicionar</a>
-    </div>
-
 	</div>
 
   <div class="table-responsive">
