@@ -238,7 +238,7 @@ function test_input($data) {
 	  </div>
 	  <div class="form-group row">
 	    <div class="col-sm-10">
-	      <button name="submit" value="employer-add-form" type="submit" class="btn btn-primary">
+	      <button name="submit" value="employer-add-form" type="submit" name="?" class="btn btn-primary">
 					<?php
 						if( $_POST['submit'] == 'edit-employer-form' )
 							echo '<ion-icon name="save"></ion-icon>&nbsp; Guardar';

@@ -4,6 +4,42 @@ session_start();
 if ( !isset($_SESSION["user"]) ) header( "Location: index.php" );
 $_SESSION["sidebar"] = "logs";
 $_SESSION["menu"] = "";
+
+require_once('config.php');
+$conn = new mysqli($host, $user, $password, $dbname, $port, $socket)
+	or die ('Could not connect to the database server' . mysqli_connect_error());
+
+if( !isset($_SESSION["logs"]['num_rows']) ) {
+	$sql = "select * from logs;";
+	$result = $conn->query($sql);
+	$_SESSION["logs"]['num_rows'] = $result->num_rows;
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form-next" ) {
+	if ($_SESSION['logs']['offset'] + $_SESSION['logs']['limit'] <= $_SESSION['logs']['num_rows'] ){
+		$_SESSION['logs']['offset'] += $_SESSION['logs']['limit'];
+		$_POST["submit"] = "";
+	}
+}
+if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form-1" ) {
+	echo "1";
+	die();
+}
+if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form-2" ) {
+	echo "2";
+	die();
+}
+if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form-3" ) {
+	echo "3";
+	die();
+}
+if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form-prev" ) {
+	if ($_SESSION['logs']['offset'] > 0 ) {
+		$_SESSION['logs']['offset'] -= $_SESSION['logs']['limit'];
+		$_POST["submit"] = "";
+	}
+}
+
 ?>
 
 <!doctype html>
@@ -99,19 +135,28 @@ $_SESSION["menu"] = "";
       </thead>
 
 <?php
-require_once('config.php');
-$conn = new mysqli($host, $user, $password, $dbname, $port, $socket)
-	or die ('Could not connect to the database server' . mysqli_connect_error());
 
 // $query = "SELECT * from parametros";
 // $query = "SELECT `parametros`.`pid`, `parametros`.`cloro`, `parametros`.`dpd3`, `parametros`.`ph`, `parametros`.`temperatura`, `parametros`.`maq`, `parametros`.`datahora`, `funcionarios`.`fullname`
 // FROM `parametros`, `funcionarios`
 // WHERE `parametros`.`responsavel` = `funcionarios`.`fid`";
+
+// $query = "SELECT `logs`.`pid`, `logs`.`cl`, `logs`.`dpd3`, `logs`.`ph`, `logs`.`temp`, `logs`.`maq`, `logs`.`timedate`, `employers`.`fullname`
+// FROM `logs`, `employers`
+// WHERE `logs`.`log_owner` = `employers`.`fid`
+// ORDER BY `logs`.`pid` desc
+// LIMIT 0, 12";
+
+if (!isset($_SESSION['logs']['orderby'])) $_SESSION['logs']['orderby'] = "asc";
+// if (!isset($_SESSION['logs']['limit_low'])) $_SESSION['logs']['limit_low'] = 0;
+if (!isset($_SESSION['logs']['limit'])) $_SESSION['logs']['limit'] = 10;
+if (!isset($_SESSION['logs']['offset'])) $_SESSION['logs']['offset'] = 0; //else $_SESSION['logs']['offset'] = 0;
+
 $query = "SELECT `logs`.`pid`, `logs`.`cl`, `logs`.`dpd3`, `logs`.`ph`, `logs`.`temp`, `logs`.`maq`, `logs`.`timedate`, `employers`.`fullname`
 FROM `logs`, `employers`
 WHERE `logs`.`log_owner` = `employers`.`fid`
-ORDER BY `logs`.`pid` desc
-LIMIT 0, 12";
+ORDER BY `logs`.`pid` ".$_SESSION['logs']['orderby']."
+LIMIT ".$_SESSION['logs']['offset'].", ".$_SESSION['logs']['limit'];
 
 if ($stmt = $conn->prepare($query)) {
 
@@ -136,13 +181,13 @@ $end = microtime(true);
 			printf('<td class="text-muted">%s</td>', $id);
 
 			// printf("<td>%s</td>", $cl);
-			if( $cl < 1.0 ) printf('<td class="text-warning" >%s</td>', $cl);
-			elseif( $cl > 1.5 ) printf('<td class="text-danger" >%s</td>', $cl);
+			if( $cl < 1.0 ) printf('<td class="text-danger" >%s</td>', $cl);
+			elseif( $cl > 1.5 ) printf('<td class="text-warning" >%s</td>', $cl);
 			else printf('<td class="text-success" >%s</td>', $cl);
 
 			// printf("<td>%s</td>", $dpd3);
-			if( $dpd3 < $cl-0.5 ) printf('<td class="text-warning" >%s</td>', $dpd3);
-			elseif( $dpd3 > $cl+0.5 ) printf('<td class="text-danger" >%s</td>', $dpd3);
+			if( $cl+$dpd3 < $cl-0.5 ) printf('<td class="text-warning" >%s</td>', $dpd3);
+			elseif( $cl+$dpd3 > $cl+0.5 ) printf('<td class="text-danger" >%s</td>', $dpd3);
 			else printf('<td class="text-success" >%s</td>', $dpd3);
 
 			// printf("<td>%s</td>", $ph);
@@ -166,8 +211,14 @@ $end = microtime(true);
 			}
 
 			printf('<td class="text-muted">%s</td>', "");
+
 			printf('<td class="text-muted">%s</td>', $timedate);
-			printf('<td class="text-muted">%s</td>', $log_owner);
+
+			if( $_SESSION['user']['fullname'] == $log_owner)
+				printf('<td>%s</td>', $log_owner);
+			else
+				printf('<td class="text-muted">%s</td>', $log_owner);
+
 			printf("</tr></tbody>");
     }
     $stmt->close();
@@ -179,34 +230,54 @@ $conn->close();
   </div>
 	<?php
 	// echo "This query took " . ($end - $start) . " seconds.";
+
 	$difference = $end - $start;
 	printf("Tempo pesquisa: %.6f seconds.", $difference);
 	// $queryTime = number_format($difference, 10);
 	// echo "<br>Query time: $queryTime seconds.";
-
-
-
 	?>
 
-<nav aria-label="Page navigation example">
-  <ul class="pagination justify-content-end">
+<form id="pages-logs-form" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" role="form">
+<!-- <nav aria-label="Page navigation example"> -->
+  <ul class="pagination pagination-sm"> <!-- justify-content-end -->
+
     <li class="page-item">
-      <a class="page-link" href="#" aria-label="Previous">
+			<button class="page-link" type="submit" name="submit" value="pages-logs-form-prev" aria-label="Anterior">
         <span aria-hidden="true">&laquo;</span>
-        <span class="sr-only">Previous</span>
-      </a>
+        <span class="sr-only">Anterior</span>
+      </button>
     </li>
-    <li class="page-item"><a class="page-link" href="#">1</a></li>
-    <li class="page-item"><a class="page-link" href="#">2</a></li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
+
+    <li class="page-item active">
+			<button class="page-link" type="submit" name="submit" value="pages-logs-form-1" aria-label="Anterior">
+				<?php printf("%d", $_SESSION["logs"]['num_rows'] / $_SESSION["logs"]['limit']); ?>
+			</button>
+		</li>
+
+		<li class="page-item">
+			<button class="page-link" type="submit" name="submit" value="pages-logs-form-2" aria-label="Anterior">
+				<?php printf("%d", $_SESSION["logs"]['num_rows'] / $_SESSION["logs"]['limit'] - 1); ?>
+			</button>
+		</li>
+
+		<li class="page-item">
+			<button class="page-link" type="submit" name="submit" value="pages-logs-form-3" aria-label="Anterior">
+				<?php printf("%d", $_SESSION["logs"]['num_rows'] / $_SESSION["logs"]['limit'] - 2); ?>
+			</button>
+		</li>
+
     <li class="page-item">
-      <a class="page-link" href="#" aria-label="Next">
-        <span aria-hidden="true">&raquo;</span>
-        <span class="sr-only">Next</span>
-      </a>
+			<button class="page-link" type="submit" name="submit" value="pages-logs-form-next" aria-label="Seguinte">
+	      <span aria-hidden="true">&raquo;</span>
+	      <span class="sr-only">Seguinte</span>
+	    </button>
     </li>
+
   </ul>
-</nav>
+<!-- </nav> -->
+</form>
+
+<?php echo $query; ?>
 
 </main>
 
@@ -214,9 +285,9 @@ $conn->close();
 </div>
 
 <?php include_once('footer.php');
-$page_end = microtime(true);
-$page_render_diff = $page_end - $page_start;
-printf("Tempo renderização página: %.6f seconds.", $page_render_diff);
+// $page_end = microtime(true);
+// $page_render_diff = $page_end - $page_start;
+// printf("Tempo renderização página: %.6f seconds.", $page_render_diff);
 ?>
 
 <script>

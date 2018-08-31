@@ -23,7 +23,6 @@
 				<a class="dropdown-item <?php if ($_SESSION['menu'] == "settings" ) echo "active"; ?>" href="settings.php"> Configurações </a>
 
 				<form class="form" id="edit-employer-form" method="post" action="employers_form.php" role="form">
-					<!-- <input type="text" class="form-control" id="inputTest" name="inputTest" placeholder="Zé Manel" required value="Test"> -->
 					<button class="dropdown-item <?php if ($_SESSION['menu'] == "employer-form" ) echo "active"; ?>" type="submit" name="submit" value="edit-employer-form"> Perfil </button>
 				</form>
 

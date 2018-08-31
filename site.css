@@ -72,4 +72,18 @@ body {
   padding-top: 80px; /* Space for fixed navbar */
 }
 
-.error {color: #FF0000;}
+.error { color: #FF0000; }
+
+.page-link {
+  color: #6c757d;
+  background-color: transparent;
+  /* background-image: none; */
+  /* border-color: #6c757d; */
+}
+
+.page-item.active .page-link {
+  z-index: 1;
+  color: #fff;
+  background-color: #6c757d;
+  border-color: #6c757d;
+}

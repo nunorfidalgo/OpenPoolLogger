@@ -47,8 +47,11 @@ $_SESSION["menu"] = "";
           <th>Email</th>
   				<th>Criado em</th>
           <th>Administrador</th>
-          <th><ion-icon name="build"></ion-icon></th>
-          <th><ion-icon name="trash"></ion-icon></th>
+          <?php
+          if( $_SESSION['user']['admin'] == "1")
+          echo '<th><ion-icon name="build"></ion-icon></th>
+                <th><ion-icon name="trash"></ion-icon></th>';
+          ?>
         </tr>
       </thead>
 
@@ -81,8 +84,11 @@ if ($stmt = $con->prepare($query)) {
 			printf('<td class="text-muted"> Sim </td>');
 		else
 			printf('<td class="text-muted"> Não </td>');
-    printf('<td class="text-muted"> <ion-icon name="build"></ion-icon> </td>');
-    printf('<td class="text-muted"> <ion-icon name="trash"></ion-icon> </td>');
+
+    if( $_SESSION['user']['admin'] == "1")
+    echo '<td class="text-muted"> <ion-icon name="build"></ion-icon> </td>
+          <td class="text-muted"> <ion-icon name="trash"></ion-icon> </td>';
+
 		printf("</tr></tbody>");
     }
     $stmt->close();

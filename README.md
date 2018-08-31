@@ -11,6 +11,8 @@ This can simple be expanded to include more parameters.
 * Multilanguage
   * PT-PT
   * EN-EN
+* No AJAX
+* Only using POSTS, no GETS
 ## Requirements
 ### Develop on
 * MAMP for Windows version 3.3.1
