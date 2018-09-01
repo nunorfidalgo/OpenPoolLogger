@@ -8,13 +8,28 @@ $_SESSION["menu"] = "";
 // if( !isset($_SESSION["logs"]["page"])) $_SESSION["logs"]["page"] = "1";
 if( !isset($_SESSION['logs']['logtype'])) $_SESSION['logs']['logtype'] = "all";
 if( !isset($_SESSION['logs']['orderby'])) $_SESSION['logs']['orderby'] = "desc";
+if( !isset($_SESSION['logs']['date'])) $_SESSION['logs']['date'] = "all";
 
 $conn = new mysqli($host, $user, $password, $dbname, $port, $socket)
 	or die ('Could not connect to the database server' . mysqli_connect_error());
 
 // Get total rows from logs table
-if( !isset($_SESSION["logs"]['num_rows']) ) {
-	$sql = "select * from logs;";
+if( !isset($_SESSION["logs"]['num_rows']) || $_SESSION['logs']['logtype'] == "all" ) {
+	$sql = "SELECT * FROM `logs`;";
+	$result = $conn->query($sql);
+	$_SESSION["logs"]['num_rows'] = $result->num_rows;
+}
+
+// Get total rows from logs table
+if( $_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-filter" && $_SESSION['logs']['logtype'] == "1" ) {
+	$sql = "SELECT * FROM `logs` WHERE `logs`.`log_type` = ".$_SESSION['logs']['logtype'].";";
+	$result = $conn->query($sql);
+	$_SESSION["logs"]['num_rows'] = $result->num_rows;
+}
+
+// Get total rows from logs table
+if( $_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-filter" && $_SESSION['logs']['logtype'] == "2" ) {
+	$sql = "SELECT * FROM `logs` WHERE `logs`.`log_type` = ".$_SESSION['logs']['logtype'].";";
 	$result = $conn->query($sql);
 	$_SESSION["logs"]['num_rows'] = $result->num_rows;
 }
@@ -23,9 +38,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-filte
 	// echo "filter";
 	// print_r($_POST);
 	// die();
-	$_SESSION['logs']['orderby'] = $_POST['inputOrderBy'];
 	$_SESSION['logs']['logtype'] = $_POST['inputLogType'];
-	// inputDate
+	$_SESSION['logs']['date'] = $_POST['inputDate'];
+	$_SESSION['logs']['orderby'] = $_POST['inputOrderBy'];
 }
 
 
@@ -133,7 +148,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 		?>
 
 		<div class="btn-group" role="group">
-		  <a class="btn btn-outline-secondary" role="button" href="#"><ion-icon name="paper"></ion-icon> &nbsp; Exportar </a>
+		  <!-- <a class="btn btn-outline-secondary" role="button" href="#"><ion-icon name="paper"></ion-icon> &nbsp; Exportar </a> -->
 		  <a class="btn btn-outline-secondary active" role="button" href="logs_form.php"> <ion-icon name="add-circle-outline"></ion-icon>&nbsp;	Adicionar </a>
 		</div>
 
@@ -144,7 +159,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 
 		<!-- <h1 class="h2"> Piscina </h1> -->
 
-		<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+		<div class="btn-group" role="group" aria-label="Button group with nested dropdown justify-content-right">
 			<div class="btn-group" role="group">
 				<!-- <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					Todos
@@ -176,22 +191,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 				</select>
 			</div>
 
-			<div class="btn-group" role="group">
-				<!-- <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<!-- <div class="btn-group" role="group">
+				<button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					Descendente
 				</button>
 				<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
 					<a class="dropdown-item" href="#">Ascendente</a>
 					<a class="dropdown-item" href="#">Descendente</a>
-				</div> -->
-				<select id="inputOrderBy" name="inputOrderBy" class="form-control">
-					<option value="desc" <?php if($_SESSION['logs']['orderby'] == "desc" ) echo "selected"; ?> >Descendente</option>
-					<option value="asc" <?php if($_SESSION['logs']['orderby'] == "asc" ) echo "selected"; ?>>Ascendente</option>
-				</select>
-			</div>
+				</div>
+
+			</div> -->
 		</div>
 
-		<div class="btn-group" role="group" aria-label="Button group with nested dropdown justify-content-end">
+		<div class="btn-group" role="group" aria-label="Button group with nested dropdown justify-content-center">
 			<div class="btn-group" role="group">
 				<!-- <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				  Todos
@@ -205,32 +217,94 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 					<a class="dropdown-item" href="#">Último Ano</a>
 				</div> -->
 				<select id="inputDate" name="inputDate" class="form-control">
-					<option value="all" selected>Todos</option>
-					<option value="last-week">Última semana</option>
-					<option value="last-two-weeks">Últimas duas semanas</option>
-					<option value="last-two-month">Último mês</option>
-					<option value="last-two-months">Últimos dois meses</option>
-					<option value="last-year">Último Ano</option>
+					<option value="all" <?php if( $_SESSION['logs']['date'] == 'all' ) echo ' selected'; ?>>Todos</option>
+					<option value="last-week"<?php if( $_SESSION['logs']['date'] == 'last-week' ) echo ' selected'; ?>>Última semana</option>
+					<option value="last-two-weeks" <?php if( $_SESSION['logs']['date'] == 'last-two-weeks' ) echo ' selected'; ?>>Últimas duas semanas</option>
+					<option value="last-month" <?php if( $_SESSION['logs']['date'] == 'last-month' ) echo ' selected'; ?>>Último mês</option>
+					<option value="last-two-months" <?php if( $_SESSION['logs']['date'] == 'last-two-months' ) echo ' selected'; ?>>Últimos dois meses</option>
+					<option value="last-year" <?php if( $_SESSION['logs']['date'] == 'last-year' ) echo ' selected'; ?>>Último Ano</option>
 				</select>
 		  </div>
-		  <!-- <a class="btn btn-outline-secondary active" role="button" href="#"> <ion-icon name="pulse"></ion-icon>&nbsp; Filtrar </a> -->
-			<button class="btn btn-outline-secondary active" type="submit" name="submit" value="logs-form-filter" aria-label="Filtrar"> Filtrar </button>
+
+			<div class="btn-group" role="group">
+				<select id="inputOrderBy" name="inputOrderBy" class="form-control">
+					<option value="desc" <?php if($_SESSION['logs']['orderby'] == "desc" ) echo "selected"; ?> >Descendente</option>
+					<option value="asc" <?php if($_SESSION['logs']['orderby'] == "asc" ) echo "selected"; ?>>Ascendente</option>
+				</select>
+			</div>
+
+			<div class="btn-group" role="group">
+				<a class="btn btn-outline-secondary" role="button" href="#"><ion-icon name="paper"></ion-icon> &nbsp; Exportar </a>
+				<!-- <a class="btn btn-outline-secondary active" role="button" href="#"> <ion-icon name="pulse"></ion-icon>&nbsp; Filtrar </a> -->
+				<button class="btn btn-outline-secondary active" type="submit" name="submit" value="logs-form-filter" aria-label="Filtrar"> <ion-icon name="search"></ion-icon>&nbsp; Filtrar </button>
+			</div>
+
 		</div>
+		</form>
+
+		<form id="pages-logs-form" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" role="form">
+		<!-- <nav aria-label="Page navigation example"> -->
+		  <ul class="pagination justify-content-end">
+
+		    <!-- <li class="page-item <?php //if ($_SESSION['logs']['offset'] <= 0 ) echo 'disabled'; ?>">
+					<button class="page-link" type="submit" name="submit" value="pages-logs-form-prev" aria-label="Anterior">
+		        <span aria-hidden="true">&laquo;</span>
+		        <span class="sr-only disable"> Anterior</span>
+		      </button>
+		    </li> -->
+
+				<li class="page-item <?php if ($_SESSION['logs']['offset'] <= 0 ) echo 'disabled'; ?>">
+					<button class="page-link" type="submit" name="submit" value="pages-logs-form-prev" aria-label="Anterior">
+						<span aria-hidden="false">&laquo;</span>
+						<span>Anterior</span>
+					</button>
+				</li>
+
+		    <li class="page-item active">
+					<!-- <button class="page-link" type="submit" name="submit" value="pages-logs-form" aria-label="Anterior"> -->
+					<div class="page-link" aria-label="Anterior">
+						<?php printf("%d", (($_SESSION["logs"]['num_rows'] - $_SESSION['logs']['offset']) / $_SESSION["logs"]['limit'])); ?>
+					</div>
+					<!-- </button> -->
+				</li>
+		<!--
+				<li class="page-item <?php //if ($_SESSION['logs']['page'] == '2' ) echo 'active'; ?>">
+					<button class="page-link" type="submit" name="submit" value="pages-logs-form" aria-label="Anterior">
+						<?php //printf("%d", (($_SESSION["logs"]['num_rows'] - $_SESSION['logs']['offset']) / $_SESSION["logs"]['limit']) - 1); ?>
+					</button>
+				</li>
+
+				<li class="page-item <?php //if ($_SESSION['logs']['page'] == '3' ) echo 'active'; ?>">
+					<button class="page-link" type="submit" name="submit" value="pages-logs-form" aria-label="Anterior">
+						<?php //printf("%d", (($_SESSION["logs"]['num_rows'] - $_SESSION['logs']['offset']) / $_SESSION["logs"]['limit']) - 2); ?>
+					</button>
+				</li> -->
+
+		    <li class="page-item <?php if ($_SESSION['logs']['offset'] + $_SESSION['logs']['limit'] >= $_SESSION['logs']['num_rows'] ) echo 'disabled'; ?>">
+					<button class="page-link" type="submit" name="submit" value="pages-logs-form-next" aria-label="Seguinte">
+					 	<span >Seguinte</span>
+			      <span aria-hidden="false">&raquo;</span>
+			    </button>
+		    </li>
+
+		  </ul>
+		<!-- </nav> -->
+		</form>
 
 	</div>
-	</form>
+
 
   <div class="table-responsive needs-validation">
     <table class="table table-striped table-sm table-hover">
       <thead>
         <tr>
           <th data-toggle="tooltip" data-placement="top" title="id"><ion-icon name="key"></ion-icon></th>
-          <th data-toggle="tooltip" data-placement="top" title="0-2 ppm ou mg/l">Cloro</th>
-          <th data-toggle="tooltip" data-placement="top" title="0-2 ppm ou mg/l">DPD3</th>
-          <th data-toggle="tooltip" data-placement="top" title="0-14">Ph</th>
-          <th data-toggle="tooltip" data-placement="top" title="Celsius (ºC)">Temperatura(ºC)</th>
-				  <th data-toggle="tooltip" data-placement="top" title="Watts">Maq</th>
-					<th data-toggle="tooltip" data-placement="top" title="Correção valores de Cl/DPD3">Correção</th>
+          <th data-toggle="tooltip" data-placement="top" title="Cloro, valores entre 0.00-2.00 ppm ou mg/l">Cl</th>
+          <th data-toggle="tooltip" data-placement="top" title="Dpd3, valores entre 0.00-2.00 ppm ou mg/l">DPD3</th>
+          <th data-toggle="tooltip" data-placement="top" title="pH, valores entre 0(ácido)->7(neutro)<-14(alcalino)">pH</th>
+          <th data-toggle="tooltip" data-placement="top" title="Temperatura em ºC">Temp</th>
+				  <th data-toggle="tooltip" data-placement="top" title="Watts gastos pelas máquinas">Máquina</th>
+					<th data-toggle="tooltip" data-placement="top" title="Correção valores de Cl/DPD3 em kg">Correção</th>
 					<th data-toggle="tooltip" data-placement="top" title="Tipo">Tipo</th>
 				  <th data-toggle="tooltip" data-placement="top" title="Data e hora">Data/Hora</th>
 				  <th data-toggle="tooltip" data-placement="top" title="Funcionário">Responsável</th>
@@ -268,10 +342,18 @@ SELECT `logs`.`pid`, `logs`.`cl`, `logs`.`dpd3`, `logs`.`ph`, `logs`.`temp`, `lo
 FROM `logs`, `employers`, `log_type`
 WHERE `logs`.`log_owner` = `employers`.`fid`
 AND `logs`.`log_type` = `log_type`.`tid`";
+
 if( $_SESSION['logs']['logtype'] != "all" )
-	$query .= " AND `logs`.`log_type` = ". $_SESSION['logs']['logtype'];
+	$query .= " AND `logs`.`log_type` = ".$_SESSION['logs']['logtype'];
+
+if( $_SESSION['logs']['date'] == 'last-week' ) $query .= " AND `logs`.`timedate` >= SUBDATE(now(), INTERVAL 1 week) ";
+if( $_SESSION['logs']['date'] == 'last-two-weeks' ) $query .= " AND `logs`.`timedate` >= SUBDATE(now(), INTERVAL 2 week) ";
+if( $_SESSION['logs']['date'] == 'last-month' ) $query .= " AND `logs`.`timedate` >= SUBDATE(now(), INTERVAL 1 month) ";
+if( $_SESSION['logs']['date'] == 'last-two-months' ) $query .= " AND `logs`.`timedate` >= SUBDATE(now(), INTERVAL 2 month) ";
+if( $_SESSION['logs']['date'] == 'last-year' ) $query .= " AND `logs`.`timedate` >= SUBDATE(now(), INTERVAL 1 year) ";
+
 $query .= "
-ORDER BY `logs`.`pid` ".$_SESSION['logs']['orderby']."
+ORDER BY `logs`.`timedate` ".$_SESSION['logs']['orderby']."
 LIMIT ".$_SESSION['logs']['offset'].", ".$_SESSION['logs']['limit'];
 
 
@@ -307,7 +389,7 @@ $end = microtime(true);
 			// printf("<td>%s</td>", $dpd3);
 			if( $cl+$dpd3 < $cl-0.5 ) printf('<td class="text-warning" >%s</td>', $dpd3);
 			elseif( $cl+$dpd3 > $cl+0.5 ) printf('<td class="text-danger" >%s</td>', $dpd3);
-			else printf('<td class="text-success" >%s</td>', $dpd3);
+			else printf('<td class="text-success">%s</td>', $dpd3);
 
 			// printf("<td>%s</td>", $ph);
 			if( $ph < 6.3 ) printf('<td class="text-danger" >%s</td>', $ph);
@@ -359,58 +441,16 @@ $conn->close();
 	// echo "<br>Query time: $queryTime seconds.";
 	?>
 
-<form id="pages-logs-form" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" role="form">
-<!-- <nav aria-label="Page navigation example"> -->
-  <ul class="pagination pagination-sm justify-content-end">
 
-    <!-- <li class="page-item <?php //if ($_SESSION['logs']['offset'] <= 0 ) echo 'disabled'; ?>">
-			<button class="page-link" type="submit" name="submit" value="pages-logs-form-prev" aria-label="Anterior">
-        <span aria-hidden="true">&laquo;</span>
-        <span class="sr-only disable"> Anterior</span>
-      </button>
-    </li> -->
 
-		<li class="page-item <?php if ($_SESSION['logs']['offset'] <= 0 ) echo 'disabled'; ?>">
-			<button class="page-link" type="submit" name="submit" value="pages-logs-form-prev" aria-label="Anterior">
-				<span aria-hidden="false">&laquo;</span>
-				<span>Anterior</span>
-			</button>
-		</li>
 
-    <li class="page-item active">
-			<!-- <button class="page-link" type="submit" name="submit" value="pages-logs-form" aria-label="Anterior"> -->
-			<div class="page-link" aria-label="Anterior">
-				<?php printf("Página: %d", ($_SESSION["logs"]['num_rows'] - $_SESSION['logs']['offset']) / $_SESSION["logs"]['limit']); ?>
-			</div>
-			<!-- </button> -->
-		</li>
-<!--
-		<li class="page-item <?php //if ($_SESSION['logs']['page'] == '2' ) echo 'active'; ?>">
-			<button class="page-link" type="submit" name="submit" value="pages-logs-form" aria-label="Anterior">
-				<?php //printf("%d", (($_SESSION["logs"]['num_rows'] - $_SESSION['logs']['offset']) / $_SESSION["logs"]['limit']) - 1); ?>
-			</button>
-		</li>
 
-		<li class="page-item <?php //if ($_SESSION['logs']['page'] == '3' ) echo 'active'; ?>">
-			<button class="page-link" type="submit" name="submit" value="pages-logs-form" aria-label="Anterior">
-				<?php //printf("%d", (($_SESSION["logs"]['num_rows'] - $_SESSION['logs']['offset']) / $_SESSION["logs"]['limit']) - 2); ?>
-			</button>
-		</li> -->
 
-    <li class="page-item <?php if ($_SESSION['logs']['offset'] + $_SESSION['logs']['limit'] >= $_SESSION['logs']['num_rows'] ) echo 'disabled'; ?>">
-			<button class="page-link" type="submit" name="submit" value="pages-logs-form-next" aria-label="Seguinte">
-			 	<span >Seguinte</span>
-	      <span aria-hidden="false">&raquo;</span>
-	    </button>
-    </li>
-
-  </ul>
-<!-- </nav> -->
-</form>
 
 <?php
-// echo $query;
-// echo '<br>';
+echo '<br><br>';
+echo $query;
+echo '<br>';
 // echo 'page: '.$_SESSION["logs"]["page"];
 ?>
 
