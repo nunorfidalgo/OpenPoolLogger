@@ -8,6 +8,10 @@ $page_start = microtime(true);
 $_SESSION["sidebar"] = "logs";
 $_SESSION["menu"] = "";
 
+if (!isset($_SESSION['logs']['orderby'])) $_SESSION['logs']['orderby'] = "asc";
+if (!isset($_SESSION['logs']['limit'])) $_SESSION['logs']['limit'] = 4;
+if (!isset($_SESSION['logs']['offset'])) $_SESSION['logs']['offset'] = 0;
+
 if( !isset($_SESSION['logs']['logtype'])) $_SESSION['logs']['logtype'] = "all";
 if( !isset($_SESSION['logs']['orderby'])) $_SESSION['logs']['orderby'] = "desc";
 if( !isset($_SESSION['logs']['date'])) $_SESSION['logs']['date'] = "all";
@@ -16,20 +20,31 @@ $conn = new mysqli($host, $user, $password, $dbname, $port, $socket)
 	or die ('Could not connect to the database server' . mysqli_connect_error());
 
 
-if( !isset($_SESSION["logs"]['num_rows']) || $_SESSION['logs']['logtype'] == "all" ) {
+if( !isset($_SESSION["logs"]['num_rows']) ) {
 	$sql = "SELECT * FROM `logs`;";
 	$result = $conn->query($sql);
 	$_SESSION["logs"]['num_rows'] = $result->num_rows;
 }
 
-if( $_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-filter" && $_SESSION['logs']['logtype'] == "1" ) {
-	$sql = "SELECT * FROM `logs` WHERE `logs`.`log_type` = ".$_SESSION['logs']['logtype'].";";
+if( $_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-filter" && $_POST['inputLogType'] == "all" ) {
+	// print_r($_POST); die();
+	$sql = "SELECT * FROM `logs`;";
 	$result = $conn->query($sql);
 	$_SESSION["logs"]['num_rows'] = $result->num_rows;
 }
 
-if( $_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-filter" && $_SESSION['logs']['logtype'] == "2" ) {
-	$sql = "SELECT * FROM `logs` WHERE `logs`.`log_type` = ".$_SESSION['logs']['logtype'].";";
+if( $_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-filter" && $_POST['inputLogType'] == "1" ) {
+	// print_r($_POST); die();
+	// $sql = "SELECT * FROM `logs` WHERE `logs`.`log_type` = ".$_SESSION['logs']['logtype'].";";
+	$sql = "SELECT * FROM `logs` WHERE `logs`.`log_type` = ".$_POST['inputLogType'].";";
+	$result = $conn->query($sql);
+	$_SESSION["logs"]['num_rows'] = $result->num_rows;
+}
+
+if( $_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-filter" && $_POST['inputLogType'] == "2" ) {
+	// print_r($_POST); die();
+	// $sql = "SELECT * FROM `logs` WHERE `logs`.`log_type` = ".$_SESSION['logs']['logtype'].";";
+	$sql = "SELECT * FROM `logs` WHERE `logs`.`log_type` = ".$_POST['inputLogType'].";";
 	$result = $conn->query($sql);
 	$_SESSION["logs"]['num_rows'] = $result->num_rows;
 }
@@ -168,9 +183,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
       </thead>
 
 			<?php
-			if (!isset($_SESSION['logs']['orderby'])) $_SESSION['logs']['orderby'] = "asc";
-			if (!isset($_SESSION['logs']['limit'])) $_SESSION['logs']['limit'] = 10;
-			if (!isset($_SESSION['logs']['offset'])) $_SESSION['logs']['offset'] = 0;
 
 			$query = "
 			SELECT `logs`.`pid`, `logs`.`cl`, `logs`.`dpd3`, `logs`.`ph`, `logs`.`temp`, `logs`.`maq`, `logs`.`timedate`, `employers`.`fullname`, `log_type`.`name`
@@ -274,13 +286,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 						</button>
 					</li>
 
+					<?php
+					for( $i = 0 ; $i <= 10 ; $i++ ){
+					?>
+
 					<li class="page-item active">
-						<!-- <button class="page-link" type="submit" name="submit" value="pages-logs-form" aria-label="Anterior"> -->
-						<div class="page-link" aria-label="Anterior">
+						<button class="page-link" type="submit" name="submit" value="pages-logs-form" aria-label="page_number">
+						<!-- <div class="page-link" aria-label="page_number"> -->
 							<?php printf("%d", (($_SESSION["logs"]['num_rows'] - $_SESSION['logs']['offset']) / $_SESSION["logs"]['limit'])); ?>
-						</div>
-						<!-- </button> -->
+						<!-- </div> -->
+						</button>
 					</li>
+
+					<?php } ?>
 
 					<li class="page-item <?php if ($_SESSION['logs']['offset'] + $_SESSION['logs']['limit'] >= $_SESSION['logs']['num_rows'] ) echo 'disabled'; ?>">
 						<button class="page-link" type="submit" name="submit" value="pages-logs-form-next" aria-label="Seguinte">
@@ -300,6 +318,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 	// echo '<br><br>';
 	echo $query;
 	echo '<br>';
+	echo 'num_rows: '.$_SESSION["logs"]['num_rows'];
 	?>
 
 </main>
