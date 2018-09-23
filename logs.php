@@ -9,7 +9,7 @@ $_SESSION["sidebar"] = "logs";
 $_SESSION["menu"] = "";
 
 if (!isset($_SESSION['logs']['orderby'])) $_SESSION['logs']['orderby'] = "asc";
-if (!isset($_SESSION['logs']['limit'])) $_SESSION['logs']['limit'] = 4;
+if (!isset($_SESSION['logs']['limit'])) $_SESSION['logs']['limit'] = 10;
 if (!isset($_SESSION['logs']['offset'])) $_SESSION['logs']['offset'] = 0;
 
 if( !isset($_SESSION['logs']['logtype'])) $_SESSION['logs']['logtype'] = "all";
@@ -287,18 +287,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 					</li>
 
 					<?php
-					for( $i = 0 ; $i <= 10 ; $i++ ){
+
+					$_SESSION["logs"]['max_pages'] = $_SESSION["logs"]['num_rows'] / $_SESSION["logs"]['limit'];
+					$_SESSION["logs"]['min_pages'] = $_SESSION["logs"]['max_pages'] - $_SESSION["logs"]['limit'];
+					$_SESSION["logs"]['page'] = (($_SESSION["logs"]['num_rows'] - $_SESSION['logs']['offset']) / $_SESSION["logs"]['limit']);
+					if ( $_SESSION["logs"]['page'] <= $_SESSION["logs"]['min_pages']  ){
+						$_SESSION["logs"]['max_pages'] -= $_SESSION["logs"]['limit'];
+						$_SESSION["logs"]['min_pages'] -= $_SESSION["logs"]['limit'];
+					}
+
+					for( $i = $_SESSION["logs"]['max_pages'] ; $i >= $_SESSION["logs"]['min_pages'] ; $i-- ){
 					?>
 
-					<li class="page-item active">
+					<li class="page-item <?php if ($_SESSION["logs"]['page'] == $i) echo "active"; ?>">
 						<button class="page-link" type="submit" name="submit" value="pages-logs-form" aria-label="page_number">
 						<!-- <div class="page-link" aria-label="page_number"> -->
-							<?php printf("%d", (($_SESSION["logs"]['num_rows'] - $_SESSION['logs']['offset']) / $_SESSION["logs"]['limit'])); ?>
+							<?php printf("%d", $i); ?>
 						<!-- </div> -->
 						</button>
 					</li>
 
-					<?php } ?>
+					<?php
+					}
+					?>
 
 					<li class="page-item <?php if ($_SESSION['logs']['offset'] + $_SESSION['logs']['limit'] >= $_SESSION['logs']['num_rows'] ) echo 'disabled'; ?>">
 						<button class="page-link" type="submit" name="submit" value="pages-logs-form-next" aria-label="Seguinte">
@@ -315,10 +326,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 	</div>
 
 	<?php
-	// echo '<br><br>';
-	echo $query;
+	echo 'num_rows: '.$_SESSION["logs"]['num_rows'].', max_pages: '.$_SESSION["logs"]['max_pages'].', min_pages: '.$_SESSION["logs"]['min_pages'].', page: '.$_SESSION["logs"]['page'];
+
 	echo '<br>';
-	echo 'num_rows: '.$_SESSION["logs"]['num_rows'];
+	echo $query;
 	?>
 
 </main>
