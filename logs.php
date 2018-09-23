@@ -9,7 +9,7 @@ $_SESSION["sidebar"] = "logs";
 $_SESSION["menu"] = "";
 
 if (!isset($_SESSION['logs']['orderby'])) $_SESSION['logs']['orderby'] = "asc";
-if (!isset($_SESSION['logs']['limit'])) $_SESSION['logs']['limit'] = 10;
+if (!isset($_SESSION['logs']['limit'])) $_SESSION['logs']['limit'] = 4;
 if (!isset($_SESSION['logs']['offset'])) $_SESSION['logs']['offset'] = 0;
 
 if( !isset($_SESSION['logs']['logtype'])) $_SESSION['logs']['logtype'] = "all";
@@ -19,11 +19,11 @@ if( !isset($_SESSION['logs']['date'])) $_SESSION['logs']['date'] = "all";
 $conn = new mysqli($host, $user, $password, $dbname, $port, $socket)
 	or die ('Could not connect to the database server' . mysqli_connect_error());
 
-
 if( !isset($_SESSION["logs"]['num_rows']) ) {
 	$sql = "SELECT * FROM `logs`;";
 	$result = $conn->query($sql);
 	$_SESSION["logs"]['num_rows'] = $result->num_rows;
+	$_SESSION["logs"]['total_pages'] = round($_SESSION["logs"]['num_rows'] / $_SESSION["logs"]['limit']);
 }
 
 if( $_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-filter" && $_POST['inputLogType'] == "all" ) {
@@ -49,11 +49,11 @@ if( $_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-filte
 	$_SESSION["logs"]['num_rows'] = $result->num_rows;
 }
 
-
-
 if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-export" ) {
 	echo "export... TODO!";
 	die();
+	// sleep(10);
+	// header( "Location: logs.php" );
 }
 
 
@@ -63,9 +63,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-filte
 	$_SESSION['logs']['orderby'] = $_POST['inputOrderBy'];
 }
 
-
 if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form-next" ) {
-	if ($_SESSION['logs']['offset'] + $_SESSION['logs']['limit'] <= $_SESSION['logs']['num_rows'] ){
+	if ($_SESSION['logs']['offset'] + $_SESSION['logs']['limit'] < $_SESSION['logs']['num_rows'] ){
 		$_SESSION['logs']['offset'] += $_SESSION['logs']['limit'];
 		$_POST["submit"] = "";
 	}
@@ -74,6 +73,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 	if ($_SESSION['logs']['offset'] > 0 ) {
 		$_SESSION['logs']['offset'] -= $_SESSION['logs']['limit'];
 		$_POST["submit"] = "";
+		if( $_SESSION["logs"]['actual_page'] >= $_SESSION["logs"]['upper_pages'] ){
+			$_SESSION["logs"]['upper_pages'] += $_SESSION["logs"]['limit'];
+			$_SESSION["logs"]['lower_pages'] += $_SESSION["logs"]['limit'];
+		}
 	}
 }
 ?>
@@ -198,9 +201,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 			if( $_SESSION['logs']['date'] == 'last-month' ) $query .= " AND `logs`.`timedate` >= SUBDATE(now(), INTERVAL 1 month) ";
 			if( $_SESSION['logs']['date'] == 'last-two-months' ) $query .= " AND `logs`.`timedate` >= SUBDATE(now(), INTERVAL 2 month) ";
 			if( $_SESSION['logs']['date'] == 'last-year' ) $query .= " AND `logs`.`timedate` >= SUBDATE(now(), INTERVAL 1 year) ";
-
+// ORDER BY `logs`.`timedate` ".$_SESSION['logs']['orderby']."
 			$query .= "
-			ORDER BY `logs`.`timedate` ".$_SESSION['logs']['orderby']."
+			ORDER BY `logs`.`pid` ".$_SESSION['logs']['orderby']."
 			LIMIT ".$_SESSION['logs']['offset'].", ".$_SESSION['logs']['limit'];
 
 			if ($stmt = $conn->prepare($query)) {
@@ -279,7 +282,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 			<div class="btn-group" role="group">
 				<ul class="pagination pagination-sm">
 
-					<li class="page-item <?php if ($_SESSION['logs']['offset'] <= 0 ) echo 'disabled'; ?>">
+					<li class="page-item <?php if ($_SESSION['logs']['offset'] <= 0 ) echo 'disabled'; else echo 'active'; ?>">
 						<button class="page-link" type="submit" name="submit" value="pages-logs-form-prev" aria-label="Anterior">
 							<span aria-hidden="false">&laquo;</span>
 							<span>Anterior</span>
@@ -287,19 +290,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 					</li>
 
 					<?php
+					$_SESSION["logs"]['actual_page'] = round(($_SESSION["logs"]['num_rows'] - $_SESSION['logs']['offset']) / $_SESSION["logs"]['limit']);
+					if( !isset($_SESSION["logs"]['total_pages'])) $_SESSION["logs"]['total_pages'] = round($_SESSION["logs"]['num_rows'] / $_SESSION["logs"]['limit']);
+					if( !isset($_SESSION["logs"]['upper_pages'])) $_SESSION["logs"]['upper_pages'] = $_SESSION["logs"]['total_pages'];
+					if( !isset($_SESSION["logs"]['lower_pages'])) $_SESSION["logs"]['lower_pages'] = $_SESSION["logs"]['upper_pages'] - $_SESSION["logs"]['limit'];
 
-					$_SESSION["logs"]['max_pages'] = $_SESSION["logs"]['num_rows'] / $_SESSION["logs"]['limit'];
-					$_SESSION["logs"]['min_pages'] = $_SESSION["logs"]['max_pages'] - $_SESSION["logs"]['limit'];
-					$_SESSION["logs"]['page'] = (($_SESSION["logs"]['num_rows'] - $_SESSION['logs']['offset']) / $_SESSION["logs"]['limit']);
-					if ( $_SESSION["logs"]['page'] <= $_SESSION["logs"]['min_pages']  ){
-						$_SESSION["logs"]['max_pages'] -= $_SESSION["logs"]['limit'];
-						$_SESSION["logs"]['min_pages'] -= $_SESSION["logs"]['limit'];
+					if( $_SESSION["logs"]['actual_page'] <= $_SESSION["logs"]['lower_pages'] ){
+						$_SESSION["logs"]['upper_pages'] -= $_SESSION["logs"]['limit'];
+						$_SESSION["logs"]['lower_pages'] -= $_SESSION["logs"]['limit'];
 					}
 
-					for( $i = $_SESSION["logs"]['max_pages'] ; $i >= $_SESSION["logs"]['min_pages'] ; $i-- ){
+
+					for( $i = $_SESSION["logs"]['upper_pages'] ; $i > $_SESSION["logs"]['lower_pages'] && $i > 0 ; $i-- ){
 					?>
 
-					<li class="page-item <?php if ($_SESSION["logs"]['page'] == $i) echo "active"; ?>">
+					<li class="page-item <?php if ($_SESSION["logs"]['actual_page'] == $i) echo "active"; ?>">
 						<button class="page-link" type="submit" name="submit" value="pages-logs-form" aria-label="page_number">
 						<!-- <div class="page-link" aria-label="page_number"> -->
 							<?php printf("%d", $i); ?>
@@ -311,7 +316,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 					}
 					?>
 
-					<li class="page-item <?php if ($_SESSION['logs']['offset'] + $_SESSION['logs']['limit'] >= $_SESSION['logs']['num_rows'] ) echo 'disabled'; ?>">
+					<li class="page-item <?php if ($_SESSION['logs']['offset'] + $_SESSION['logs']['limit'] >= $_SESSION['logs']['num_rows'] ) echo 'disabled'; else echo 'active'; ?>">
 						<button class="page-link" type="submit" name="submit" value="pages-logs-form-next" aria-label="Seguinte">
 							<span >Seguinte</span>
 							<span aria-hidden="false">&raquo;</span>
@@ -326,8 +331,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 	</div>
 
 	<?php
-	echo 'num_rows: '.$_SESSION["logs"]['num_rows'].', max_pages: '.$_SESSION["logs"]['max_pages'].', min_pages: '.$_SESSION["logs"]['min_pages'].', page: '.$_SESSION["logs"]['page'];
-
+	echo 'num_rows: '.$_SESSION["logs"]['num_rows'].', total_pages: '.$_SESSION["logs"]['total_pages'].', upper_pages: '.$_SESSION["logs"]['upper_pages'].', lower_pages: '.$_SESSION["logs"]['lower_pages'].', page: '.$_SESSION["logs"]['actual_page'];
+	echo '<br>';
+	echo 'offset: '.$_SESSION['logs']['offset'].', limit: '.$_SESSION['logs']['limit'];
 	echo '<br>';
 	echo $query;
 	?>
