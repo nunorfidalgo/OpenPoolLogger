@@ -87,3 +87,9 @@ body {
   background-color: #6c757d;
   border-color: #6c757d;
 }
+
+dl, ol, ul {
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+  /* margin: auto !important; */
+}

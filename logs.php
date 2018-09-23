@@ -9,7 +9,7 @@ $_SESSION["sidebar"] = "logs";
 $_SESSION["menu"] = "";
 
 if (!isset($_SESSION['logs']['orderby'])) $_SESSION['logs']['orderby'] = "asc";
-if (!isset($_SESSION['logs']['limit'])) $_SESSION['logs']['limit'] = 4;
+if (!isset($_SESSION['logs']['limit'])) $_SESSION['logs']['limit'] = 10;
 if (!isset($_SESSION['logs']['offset'])) $_SESSION['logs']['offset'] = 0;
 
 if( !isset($_SESSION['logs']['logtype'])) $_SESSION['logs']['logtype'] = "all";
@@ -26,11 +26,18 @@ if( !isset($_SESSION["logs"]['num_rows']) ) {
 	$_SESSION["logs"]['total_pages'] = round($_SESSION["logs"]['num_rows'] / $_SESSION["logs"]['limit']);
 }
 
+if( !isset($_SESSION["logs"]['total_pages'])) $_SESSION["logs"]['total_pages'] = round($_SESSION["logs"]['num_rows'] / $_SESSION["logs"]['limit']);
+if( !isset($_SESSION["logs"]['upper_pages'])) $_SESSION["logs"]['upper_pages'] = $_SESSION["logs"]['total_pages'];
+if( !isset($_SESSION["logs"]['lower_pages'])) $_SESSION["logs"]['lower_pages'] = $_SESSION["logs"]['upper_pages'] - $_SESSION["logs"]['limit'];
+
 if( $_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-filter" && $_POST['inputLogType'] == "all" ) {
 	// print_r($_POST); die();
 	$sql = "SELECT * FROM `logs`;";
 	$result = $conn->query($sql);
 	$_SESSION["logs"]['num_rows'] = $result->num_rows;
+	$_SESSION["logs"]['total_pages'] = round($_SESSION["logs"]['num_rows'] / $_SESSION["logs"]['limit']);
+	$_SESSION["logs"]['upper_pages'] = $_SESSION["logs"]['total_pages'];
+	$_SESSION["logs"]['lower_pages'] = $_SESSION["logs"]['upper_pages'] - $_SESSION["logs"]['limit'];
 }
 
 if( $_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-filter" && $_POST['inputLogType'] == "1" ) {
@@ -39,6 +46,9 @@ if( $_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-filte
 	$sql = "SELECT * FROM `logs` WHERE `logs`.`log_type` = ".$_POST['inputLogType'].";";
 	$result = $conn->query($sql);
 	$_SESSION["logs"]['num_rows'] = $result->num_rows;
+	$_SESSION["logs"]['total_pages'] = round($_SESSION["logs"]['num_rows'] / $_SESSION["logs"]['limit']);
+	$_SESSION["logs"]['upper_pages'] = $_SESSION["logs"]['total_pages'];
+	$_SESSION["logs"]['lower_pages'] = $_SESSION["logs"]['upper_pages'] - $_SESSION["logs"]['limit'];
 }
 
 if( $_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-filter" && $_POST['inputLogType'] == "2" ) {
@@ -47,6 +57,9 @@ if( $_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-filte
 	$sql = "SELECT * FROM `logs` WHERE `logs`.`log_type` = ".$_POST['inputLogType'].";";
 	$result = $conn->query($sql);
 	$_SESSION["logs"]['num_rows'] = $result->num_rows;
+	$_SESSION["logs"]['total_pages'] = round($_SESSION["logs"]['num_rows'] / $_SESSION["logs"]['limit']);
+	$_SESSION["logs"]['upper_pages'] = $_SESSION["logs"]['total_pages'];
+	$_SESSION["logs"]['lower_pages'] = $_SESSION["logs"]['upper_pages'] - $_SESSION["logs"]['limit'];
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-export" ) {
@@ -55,7 +68,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-expor
 	// sleep(10);
 	// header( "Location: logs.php" );
 }
-
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-filter" ) {
 	$_SESSION['logs']['logtype'] = $_POST['inputLogType'];
@@ -79,6 +91,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 		}
 	}
 }
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "jump_to_page_number" ) {
+	echo "test";
+	print_r($_POST);
+	die();
+}
+
 ?>
 
 <!doctype html>
@@ -152,8 +171,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 
 			<div class="btn-group" role="group">
 				<select id="inputOrderBy" name="inputOrderBy" class="form-control">
-					<option value="desc" <?php if($_SESSION['logs']['orderby'] == "desc" ) echo "selected"; ?> >Descendente</option>
-					<option value="asc" <?php if($_SESSION['logs']['orderby'] == "asc" ) echo "selected"; ?>>Ascendente</option>
+					<option value="desc" <?php if($_SESSION['logs']['orderby'] == "desc" ) echo "selected"; ?> > Data descendente</option>
+					<option value="asc" <?php if($_SESSION['logs']['orderby'] == "asc" ) echo "selected"; ?>>Data ascendente</option>
 				</select>
 			</div>
 		</div>
@@ -168,8 +187,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 	</form>
 	</div>
 
-  <div class="table-responsive needs-validation">
-    <table class="table table-striped table-sm table-hover">
+  <div class="table-responsive needs-validation ">
+    <table class="table table-condensed table-sm table-hover"><!-- table-striped -->
       <thead>
         <tr>
           <th data-toggle="tooltip" data-placement="top" title="id"><ion-icon name="key"></ion-icon></th>
@@ -201,16 +220,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 			if( $_SESSION['logs']['date'] == 'last-month' ) $query .= " AND `logs`.`timedate` >= SUBDATE(now(), INTERVAL 1 month) ";
 			if( $_SESSION['logs']['date'] == 'last-two-months' ) $query .= " AND `logs`.`timedate` >= SUBDATE(now(), INTERVAL 2 month) ";
 			if( $_SESSION['logs']['date'] == 'last-year' ) $query .= " AND `logs`.`timedate` >= SUBDATE(now(), INTERVAL 1 year) ";
-// ORDER BY `logs`.`timedate` ".$_SESSION['logs']['orderby']."
+// ORDER BY `logs`.`pid` ".$_SESSION['logs']['orderby']."
 			$query .= "
-			ORDER BY `logs`.`pid` ".$_SESSION['logs']['orderby']."
+			ORDER BY `logs`.`timedate` ".$_SESSION['logs']['orderby']."
 			LIMIT ".$_SESSION['logs']['offset'].", ".$_SESSION['logs']['limit'];
 
 			if ($stmt = $conn->prepare($query)) {
 
 			$start = microtime(true);
 
-			    $stmt->execute();
+	    $stmt->execute();
 
 			$end = microtime(true);
 
@@ -245,7 +264,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 							else printf('<td class="text-warning" >%s</td>', $maq);
 						}
 
-						printf('<td class="text-muted">%s</td>', "");
+						// printf('<td class="text-muted">%s</td>', "");
+printf('<td class="text-muted">
+    <input type="number" class="form-control col-sm-6" id="inputClCorreted" aria-describedby="inputClCorreted" placeholder="Valor" readonly>
+    <!-- <small id="emailHelp" class="form-text text-muted">We will never share your email with anyone else.</small> -->
+  <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+</td>');
+// echo '
+// <form>
+//   <div class="form-group">
+//
+//     <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+//     <!-- <small id="emailHelp" class="form-text text-muted">We will never share your email with anyone else.</small> -->
+//   </div>
+//
+//   <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+// </form>';
 
 						printf('<td class="text-muted">%s</td>', $type);
 
@@ -270,10 +304,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 
 		<div class="btn-group" role="group" aria-label="Button group with nested dropdown justify-content-start">
 			<div class="btn-group" role="group">
+				<label for="query-time">
 				<?php
 				$difference = $end - $start;
 				printf("Tempo pesquisa: %.6f seconds.", $difference);
 				?>
+				</label>
 			</div>
 		</div>
 
@@ -291,24 +327,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 
 					<?php
 					$_SESSION["logs"]['actual_page'] = round(($_SESSION["logs"]['num_rows'] - $_SESSION['logs']['offset']) / $_SESSION["logs"]['limit']);
-					if( !isset($_SESSION["logs"]['total_pages'])) $_SESSION["logs"]['total_pages'] = round($_SESSION["logs"]['num_rows'] / $_SESSION["logs"]['limit']);
-					if( !isset($_SESSION["logs"]['upper_pages'])) $_SESSION["logs"]['upper_pages'] = $_SESSION["logs"]['total_pages'];
-					if( !isset($_SESSION["logs"]['lower_pages'])) $_SESSION["logs"]['lower_pages'] = $_SESSION["logs"]['upper_pages'] - $_SESSION["logs"]['limit'];
+
 
 					if( $_SESSION["logs"]['actual_page'] <= $_SESSION["logs"]['lower_pages'] ){
 						$_SESSION["logs"]['upper_pages'] -= $_SESSION["logs"]['limit'];
 						$_SESSION["logs"]['lower_pages'] -= $_SESSION["logs"]['limit'];
 					}
 
-
 					for( $i = $_SESSION["logs"]['upper_pages'] ; $i > $_SESSION["logs"]['lower_pages'] && $i > 0 ; $i-- ){
 					?>
 
 					<li class="page-item <?php if ($_SESSION["logs"]['actual_page'] == $i) echo "active"; ?>">
-						<button class="page-link" type="submit" name="submit" value="pages-logs-form" aria-label="page_number">
-						<!-- <div class="page-link" aria-label="page_number"> -->
+						<input id="page_num" name="page_num" type="hidden" value="<?php echo $i; ?>"> </input>
+						<button class="page-link" type="submit" name="submit" value="jump_to_page_number" aria-label="jump_to_page_number">
+							<?php //echo $i; ?>
 							<?php printf("%d", $i); ?>
-						<!-- </div> -->
 						</button>
 					</li>
 
@@ -331,11 +364,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 	</div>
 
 	<?php
-	echo 'num_rows: '.$_SESSION["logs"]['num_rows'].', total_pages: '.$_SESSION["logs"]['total_pages'].', upper_pages: '.$_SESSION["logs"]['upper_pages'].', lower_pages: '.$_SESSION["logs"]['lower_pages'].', page: '.$_SESSION["logs"]['actual_page'];
-	echo '<br>';
-	echo 'offset: '.$_SESSION['logs']['offset'].', limit: '.$_SESSION['logs']['limit'];
-	echo '<br>';
-	echo $query;
+	// echo 'num_rows: '.$_SESSION["logs"]['num_rows'].', total_pages: '.$_SESSION["logs"]['total_pages'].', upper_pages: '.$_SESSION["logs"]['upper_pages'].', lower_pages: '.$_SESSION["logs"]['lower_pages'].', page: '.$_SESSION["logs"]['actual_page'];
+	// echo '<br>';
+	// echo 'offset: '.$_SESSION['logs']['offset'].', limit: '.$_SESSION['logs']['limit'];
+	// echo '<br>';
+	// echo $query;
 	?>
 
 </main>
