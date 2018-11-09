@@ -1,4 +1,5 @@
 <?php
+error_log("\n\nInicio!!!\n");
 if ( isset($_SESSION["user"]) ) header( "Location: logs.php" );
 ?>
 <!doctype html>

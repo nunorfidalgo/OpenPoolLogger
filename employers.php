@@ -66,19 +66,19 @@ WHERE `parametros`.`responsavel` = `funcionarios`.`fid`
 */
 
 // $query = "SELECT `funcionarios`.`fid`, `funcionarios`.`fullname`, `funcionarios`.`username`, `funcionarios`.`email`, `funcionarios`.`admin`, `funcionarios`.`datahora` FROM `funcionarios`";
-$query = "SELECT `employers`.`fid`, `employers`.`fullname`, `employers`.`username`, `employers`.`email`, `employers`.`admin`, `employers`.`timedate` FROM `employers`";
+$query = "SELECT `employers`.`eid`, `employers`.`fullname`, `employers`.`username`, `employers`.`email`, `employers`.`admin`, `employers`.`record_datetime` FROM `employers`";
 
 if ($stmt = $con->prepare($query)) {
     $stmt->execute();
 	//print_r($stmt);
-    $stmt->bind_result($fid, $fullname, $username, $email, $admin, $timedate);
+    $stmt->bind_result($fid, $fullname, $username, $email, $admin, $record_datetime);
     while ($stmt->fetch()) {
         //printf("%s, %s\n", $field1, $field2);
 		printf("<tbody><tr>");
 
     // printf('<td class="text-muted"> %s </td>', $fid);
 		printf("<td>%s</td> <td>%s</td> <td>%s</td>", $fullname, $username, $email);
-    printf('<td class="text-muted"> %s </td>', $timedate);
+    printf('<td class="text-muted"> %s </td>', $record_datetime);
 
 		if($admin == "1")
 			printf('<td class="text-muted"> Sim </td>');
@@ -98,6 +98,11 @@ $con->close();
 
 		</table>
 	</div>
+
+  <?php
+  echo '<br>';
+  echo $query;
+  ?>
 </main>
 
 </div>

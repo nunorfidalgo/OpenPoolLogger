@@ -23,8 +23,8 @@ function randomDate($start_date, $end_date){
 $conn = new mysqli($host, $user, $password, $dbname, $port, $socket)
 	or die ('Could not connect to the database server' . mysqli_connect_error());
 
-// $stmt = $conn->prepare("INSERT INTO `logs` (`cl`, `dpd3`, `ph`, `temp`, `maq`, `timedate`, `log_owner`, `log_type`) VALUES (?, ?, ?, ?, ?, NOW(), ?, ?) ");
-$stmt = $conn->prepare("INSERT INTO `logs` (`cl`, `dpd3`, `ph`, `temp`, `maq`, `timedate`, `log_owner`, `log_type`) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ");
+// $stmt = $conn->prepare("INSERT INTO `logs` (`cl`, `dpd3`, `ph`, `temp`, `maq`, `record_time`, `log_owner`, `log_type`) VALUES (?, ?, ?, ?, ?, NOW(), ?, ?) ");
+$stmt = $conn->prepare("INSERT INTO `logs` (`cl`, `dpd3`, `ph`, `temp`, `maq`, `record_time`, `log_owner`, `log_type`) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ");
 $stmt->bind_param("dddddsdd", $cl, $dpd3, $ph, $temp, $maq, $timedate, $owner, $type);
 
 $max_logs = 60; //2*364;

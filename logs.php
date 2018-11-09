@@ -207,22 +207,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "jump_to_page_nu
 			<?php
 
 			$query = "
-			SELECT `logs`.`pid`, `logs`.`cl`, `logs`.`dpd3`, `logs`.`ph`, `logs`.`temp`, `logs`.`maq`, `logs`.`timedate`, `employers`.`fullname`, `log_type`.`name`
+			SELECT `logs`.`lid`, `logs`.`cl`, `logs`.`dpd3`, `logs`.`ph`, `logs`.`temp`, `logs`.`maq`, `logs`.`record_time`, `employers`.`fullname`, `log_type`.`name`
 			FROM `logs`, `employers`, `log_type`
-			WHERE `logs`.`log_owner` = `employers`.`fid`
+			WHERE `logs`.`log_owner` = `employers`.`eid`
 			AND `logs`.`log_type` = `log_type`.`tid`";
 
 			if( $_SESSION['logs']['logtype'] != "all" )
 				$query .= " AND `logs`.`log_type` = ".$_SESSION['logs']['logtype'];
 
-			if( $_SESSION['logs']['date'] == 'last-week' ) $query .= " AND `logs`.`timedate` >= SUBDATE(now(), INTERVAL 1 week) ";
-			if( $_SESSION['logs']['date'] == 'last-two-weeks' ) $query .= " AND `logs`.`timedate` >= SUBDATE(now(), INTERVAL 2 week) ";
-			if( $_SESSION['logs']['date'] == 'last-month' ) $query .= " AND `logs`.`timedate` >= SUBDATE(now(), INTERVAL 1 month) ";
-			if( $_SESSION['logs']['date'] == 'last-two-months' ) $query .= " AND `logs`.`timedate` >= SUBDATE(now(), INTERVAL 2 month) ";
-			if( $_SESSION['logs']['date'] == 'last-year' ) $query .= " AND `logs`.`timedate` >= SUBDATE(now(), INTERVAL 1 year) ";
+			if( $_SESSION['logs']['date'] == 'last-week' ) $query .= " AND `logs`.`record_time` >= SUBDATE(now(), INTERVAL 1 week) ";
+			if( $_SESSION['logs']['date'] == 'last-two-weeks' ) $query .= " AND `logs`.`record_time` >= SUBDATE(now(), INTERVAL 2 week) ";
+			if( $_SESSION['logs']['date'] == 'last-month' ) $query .= " AND `logs`.`record_time` >= SUBDATE(now(), INTERVAL 1 month) ";
+			if( $_SESSION['logs']['date'] == 'last-two-months' ) $query .= " AND `logs`.`record_time` >= SUBDATE(now(), INTERVAL 2 month) ";
+			if( $_SESSION['logs']['date'] == 'last-year' ) $query .= " AND `logs`.`record_time` >= SUBDATE(now(), INTERVAL 1 year) ";
 // ORDER BY `logs`.`pid` ".$_SESSION['logs']['orderby']."
 			$query .= "
-			ORDER BY `logs`.`timedate` ".$_SESSION['logs']['orderby']."
+			ORDER BY `logs`.`record_time` ".$_SESSION['logs']['orderby']."
 			LIMIT ".$_SESSION['logs']['offset'].", ".$_SESSION['logs']['limit'];
 
 			if ($stmt = $conn->prepare($query)) {
@@ -233,7 +233,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "jump_to_page_nu
 
 			$end = microtime(true);
 
-			    $stmt->bind_result($id, $cl, $dpd3, $ph, $temp, $maq, $timedate, $log_owner, $type);
+			    $stmt->bind_result($id, $cl, $dpd3, $ph, $temp, $maq, $record_time, $log_owner, $type);
 
 			    while ($stmt->fetch()) {
 						printf("<tbody><tr>");
@@ -283,7 +283,7 @@ printf('<td class="text-muted">
 
 						printf('<td class="text-muted">%s</td>', $type);
 
-						printf('<td class="text-muted">%s</td>', $timedate);
+						printf('<td class="text-muted">%s</td>', $record_time);
 
 						if( $_SESSION['user']['fullname'] == $log_owner)
 							printf('<td>%s</td>', $log_owner);
@@ -306,9 +306,9 @@ printf('<td class="text-muted">
 			<div class="btn-group" role="group">
 				<label for="query-time">
 				<?php
-				$difference = $end - $start;
-				printf("Tempo pesquisa: %.6f seconds.", $difference);
-				?>
+				// $difference = $end - $start;
+				// printf("Tempo pesquisa: %.6f seconds.", $difference);
+				// ?>
 				</label>
 			</div>
 		</div>
@@ -364,11 +364,11 @@ printf('<td class="text-muted">
 	</div>
 
 	<?php
-	// echo 'num_rows: '.$_SESSION["logs"]['num_rows'].', total_pages: '.$_SESSION["logs"]['total_pages'].', upper_pages: '.$_SESSION["logs"]['upper_pages'].', lower_pages: '.$_SESSION["logs"]['lower_pages'].', page: '.$_SESSION["logs"]['actual_page'];
-	// echo '<br>';
-	// echo 'offset: '.$_SESSION['logs']['offset'].', limit: '.$_SESSION['logs']['limit'];
-	// echo '<br>';
-	// echo $query;
+	echo 'num_rows: '.$_SESSION["logs"]['num_rows'].', total_pages: '.$_SESSION["logs"]['total_pages'].', upper_pages: '.$_SESSION["logs"]['upper_pages'].', lower_pages: '.$_SESSION["logs"]['lower_pages'].', page: '.$_SESSION["logs"]['actual_page'];
+	echo '<br>';
+	echo 'offset: '.$_SESSION['logs']['offset'].', limit: '.$_SESSION['logs']['limit'];
+	echo '<br>';
+	echo $query;
 	?>
 
 </main>
