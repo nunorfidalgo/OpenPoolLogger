@@ -26,8 +26,7 @@ CREATE TABLE IF NOT EXISTS `logs` (
   `dpd3` float UNSIGNED,
   `ph` float UNSIGNED,
   `temp` float UNSIGNED,
-  `maq` int UNSIGNED,
-/* adicionar o registo de adição de cloro!!! */
+  `maq` int UNSIGNED, -- adicionar o registo de adição de cloro!!!
   `record_time` datetime NOT NULL,
   `log_owner` bigint(20) UNSIGNED NOT NULL,
   `log_type` tinyint UNSIGNED NOT NULL,

@@ -49,8 +49,14 @@ $_SESSION["menu"] = "";
           <th>Administrador</th>
           <?php
           if( $_SESSION['user']['admin'] == "1")
-          echo '<th><ion-icon name="build"></ion-icon></th>
-                <th><ion-icon name="trash"></ion-icon></th>';
+          echo '
+            <th>
+              <ion-icon name="build"></ion-icon>
+            </form>
+            </th>
+            <th>
+              <ion-icon name="trash"></ion-icon>
+            </th>';
           ?>
         </tr>
       </thead>
@@ -86,9 +92,19 @@ if ($stmt = $con->prepare($query)) {
 			printf('<td class="text-muted"> Não </td>');
 
     if( $_SESSION['user']['admin'] == "1")
-    echo '<td class="text-muted"> <ion-icon name="build"></ion-icon> </td>
-          <td class="text-muted"> <ion-icon name="trash"></ion-icon> </td>';
-
+    echo '
+    <td class="text-muted">
+      <form class="form" id="edit-employer-form" method="post" action="employers_form.php" role="form">
+        <button type="submit" name="submit" value="edit-employer-form">
+        <input hidden name="fid" value="'.$fid.'"/>
+          <ion-icon name="build"></ion-icon>
+        </button>
+      </form>
+    </td>
+    <td class="text-muted">
+      <ion-icon name="trash"></ion-icon>
+    </td>
+    ';
 		printf("</tr></tbody>");
     }
     $stmt->close();

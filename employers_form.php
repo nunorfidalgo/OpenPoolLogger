@@ -19,9 +19,9 @@ $msg = $inputFullname = $inputUsername = $inputPassword = $inputEmail = $inputEm
 **************************************/
 if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "edit-employer-form" ) {
 	$_SESSION["menu"] = "employer-form";
-	// echo "aqui";
-	// print_r($_POST);
-	// die();
+	echo "edit-employer-form";
+	print_r($_POST);
+	die();
 } // end edit-employer-form
 
 /**************************************

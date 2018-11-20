@@ -27,7 +27,7 @@ $conn = new mysqli($host, $user, $password, $dbname, $port, $socket)
 $stmt = $conn->prepare("INSERT INTO `logs` (`cl`, `dpd3`, `ph`, `temp`, `maq`, `record_time`, `log_owner`, `log_type`) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ");
 $stmt->bind_param("dddddsdd", $cl, $dpd3, $ph, $temp, $maq, $timedate, $owner, $type);
 
-$max_logs = 60; //2*364;
+$max_logs = 120; //2*364;
 for ($i = 1; $i <= $max_logs; $i++) {
   $cl = frand(0, 2, 2);
   $dpd3 = frand(0, 2, 2);
@@ -36,7 +36,7 @@ for ($i = 1; $i <= $max_logs; $i++) {
   $maq = rand(1,999);
   $timedate = randomDate( "now", "-2 weeks");
   // $timedate = randomDate( "now", "-2 years");
-  $owner = rand(1,2); // alterar para 6 quando colocar os novos users
+  $owner = rand(1,6); // alterar para 6 quando colocar os novos users
   $type = rand(1,2);
   $str = printf("%.2f, %.2f, %.2f, %.2f, %d, %s, %d, %d", $cl, $dpd3, $ph, $temp, $maq, $timedate, $owner, $type);
   if( $stmt->execute() == TRUE ) { $str .= ", OK!!!<br>"; echo $str; } else { break; }

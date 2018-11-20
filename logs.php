@@ -171,8 +171,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "jump_to_page_nu
 
 			<div class="btn-group" role="group">
 				<select id="inputOrderBy" name="inputOrderBy" class="form-control">
-					<option value="desc" <?php if($_SESSION['logs']['orderby'] == "desc" ) echo "selected"; ?> > Data descendente</option>
-					<option value="asc" <?php if($_SESSION['logs']['orderby'] == "asc" ) echo "selected"; ?>>Data ascendente</option>
+					<option value="desc" <?php if($_SESSION['logs']['orderby'] == "desc" ) echo "selected"; ?>> Data descendente </option>
+					<option value="asc" <?php if($_SESSION['logs']['orderby'] == "asc" ) echo "selected"; ?>> Data ascendente </option>
 				</select>
 			</div>
 		</div>
@@ -205,7 +205,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "jump_to_page_nu
       </thead>
 
 			<?php
-
 			$query = "
 			SELECT `logs`.`lid`, `logs`.`cl`, `logs`.`dpd3`, `logs`.`ph`, `logs`.`temp`, `logs`.`maq`, `logs`.`record_time`, `employers`.`fullname`, `log_type`.`name`
 			FROM `logs`, `employers`, `log_type`
