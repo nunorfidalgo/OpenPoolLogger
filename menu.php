@@ -23,7 +23,8 @@
 				<a class="dropdown-item <?php if ($_SESSION['menu'] == "settings" ) echo "active"; ?>" href="settings.php"> Configurações </a>
 
 				<form class="form" id="edit-employer-form" method="post" action="employers_form.php" role="form">
-					<button class="dropdown-item <?php if ($_SESSION['menu'] == "employer-form" ) echo "active"; ?>" type="submit" name="submit" value="edit-employer-form"> Perfil </button>
+					<button class="dropdown-item <?php if ( $_SESSION['user']['eid'] == $inputEid) echo "active"; ?>" type="submit" name="submit" value="edit-employer-form"> Perfil </button>
+					<input hidden name="eid" value="<?php echo $_SESSION['user']['eid']; ?>"/>
 				</form>
 
 				<form class="form" id="logout-form" method="post" action="logout.php" role="form">

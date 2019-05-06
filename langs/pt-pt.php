@@ -27,6 +27,7 @@ $lang = array(
     )
   )
 );
-
-print_r($lang);
+header('Content-Type: application/json'); // firefox json viewer: about:confg -> devtools.jsonview.enabled
+// print_r($lang);
+echo json_encode($lang, JSON_PRETTY_PRINT);
 ?>

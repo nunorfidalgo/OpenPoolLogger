@@ -51,6 +51,7 @@ if( $_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-filte
 	$_SESSION["logs"]['lower_pages'] = $_SESSION["logs"]['upper_pages'] - $_SESSION["logs"]['limit'];
 }
 
+
 if( $_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-filter" && $_POST['inputLogType'] == "2" ) {
 	// print_r($_POST); die();
 	// $sql = "SELECT * FROM `logs` WHERE `logs`.`log_type` = ".$_SESSION['logs']['logtype'].";";
@@ -62,6 +63,8 @@ if( $_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-filte
 	$_SESSION["logs"]['lower_pages'] = $_SESSION["logs"]['upper_pages'] - $_SESSION["logs"]['limit'];
 }
 
+
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-export" ) {
 	echo "export... TODO!";
 	die();
@@ -69,11 +72,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-expor
 	// header( "Location: logs.php" );
 }
 
+
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-filter" ) {
 	$_SESSION['logs']['logtype'] = $_POST['inputLogType'];
 	$_SESSION['logs']['date'] = $_POST['inputDate'];
 	$_SESSION['logs']['orderby'] = $_POST['inputOrderBy'];
 }
+
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form-next" ) {
 	if ($_SESSION['logs']['offset'] + $_SESSION['logs']['limit'] < $_SESSION['logs']['num_rows'] ){
@@ -81,6 +88,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 		$_POST["submit"] = "";
 	}
 }
+
+
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form-prev" ) {
 	if ($_SESSION['logs']['offset'] > 0 ) {
 		$_SESSION['logs']['offset'] -= $_SESSION['logs']['limit'];
@@ -92,13 +102,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 	}
 }
 
+
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "jump_to_page_number" ) {
 	echo "test";
 	print_r($_POST);
 	die();
 }
-
 ?>
+
+
+
+
+
+
+
+
+
 
 <!doctype html>
 <html lang="en">
@@ -237,37 +257,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "jump_to_page_nu
 			    while ($stmt->fetch()) {
 						printf("<tbody><tr>");
 
-						printf('<td class="text-muted">%s</td>', $id);
+						printf('<td class="text-muted align-middle">%s</td>', $id);
 
-						if( $cl < 1.0 ) printf('<td class="text-danger" >%s</td>', $cl);
-						elseif( $cl > 1.5 ) printf('<td class="text-warning" >%s</td>', $cl);
-						else printf('<td class="text-success" >%s</td>', $cl);
+						if( $cl < 1.0 ) printf('<td class="text-danger align-middle" >%s</td>', $cl);
+						elseif( $cl > 1.5 ) printf('<td class="text-warning align-middle" >%s</td>', $cl);
+						else printf('<td class="text-success align-middle" >%s</td>', $cl);
 
-						if( $cl+$dpd3 < $cl-0.5 ) printf('<td class="text-warning" >%s</td>', $dpd3);
-						elseif( $cl+$dpd3 > $cl+0.5 ) printf('<td class="text-danger" >%s</td>', $dpd3);
-						else printf('<td class="text-success">%s</td>', $dpd3);
+						if( $cl+$dpd3 < $cl-0.5 ) printf('<td class="text-warning align-middle" >%s</td>', $dpd3);
+						elseif( $cl+$dpd3 > $cl+0.5 ) printf('<td class="text-danger align-middle" >%s</td>', $dpd3);
+						else printf('<td class="text-success align-middle">%s</td>', $dpd3);
 
-						if( $ph < 6.3 ) printf('<td class="text-danger" >%s</td>', $ph);
-						elseif( $ph > 7.1 ) printf('<td class="text-success" >%s</td>', $ph);
-						else printf('<td class="text-warning" >%s</td>', $ph);
+						if( $ph < 6.3 ) printf('<td class="text-danger align-middle" >%s</td>', $ph);
+						elseif( $ph > 7.1 ) printf('<td class="text-success align-middle" >%s</td>', $ph);
+						else printf('<td class="text-warning align-middle" >%s</td>', $ph);
 
-						if( $temp < 20 ) printf('<td class="text-danger" >%s</td>', $temp);
-						elseif( $temp > 25 ) printf('<td class="text-success" >%s</td>', $temp);
-						else printf('<td class="text-warning" >%s</td>', $temp);
+						if( $temp < 20 ) printf('<td class="text-danger align-middle" >%s</td>', $temp);
+						elseif( $temp > 25 ) printf('<td class="text-success align-middle" >%s</td>', $temp);
+						else printf('<td class="text-warning align-middle" >%s</td>', $temp);
 
 						if( $maq == '' ) {
-							printf("<td>-</td>");
+							printf('<td class="text-muted align-middle">-</td>');
 						} else {
-							if( $maq < 450 ) printf('<td class="text-success" >%s</td>', $maq);
-							elseif( $maq > 500 ) printf('<td class="text-danger" >%s</td>', $maq);
-							else printf('<td class="text-warning" >%s</td>', $maq);
+							if( $maq < 450 ) printf('<td class="text-success align-middle" >%s</td>', $maq);
+							elseif( $maq > 500 ) printf('<td class="text-danger align-middle" >%s</td>', $maq);
+							else printf('<td class="text-warning align-middle" >%s</td>', $maq);
 						}
 
 						// printf('<td class="text-muted">%s</td>', "");
-printf('<td class="text-muted">
-    <input type="number" class="form-control col-sm-6" id="inputClCorreted" aria-describedby="inputClCorreted" placeholder="Valor" readonly>
-    <!-- <small id="emailHelp" class="form-text text-muted">We will never share your email with anyone else.</small> -->
-  <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+printf('<td class="text-muted align-middle">
+    <!--<input type="number" class="form-control col-sm-6" id="inputClCorreted" aria-describedby="inputClCorreted" placeholder="Valor" readonly>-->
+  	<select id="inputClCorreted" name="inputClCorreted" class="form-control">
+		<option value="">1.0 kg</option>
+		<option value="">1.5 kg</option>
+		</select>
 </td>');
 // echo '
 // <form>
@@ -280,14 +302,14 @@ printf('<td class="text-muted">
 //   <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
 // </form>';
 
-						printf('<td class="text-muted">%s</td>', $type);
+						printf('<td class="text-muted align-middle">%s</td>', $type);
 
-						printf('<td class="text-muted">%s</td>', $record_time);
+						printf('<td class="text-muted align-middle">%s</td>', $record_time);
 
 						if( $_SESSION['user']['fullname'] == $log_owner)
-							printf('<td>%s</td>', $log_owner);
+							printf('<td class="align-middle">%s</td>', $log_owner);
 						else
-							printf('<td class="text-muted">%s</td>', $log_owner);
+							printf('<td class="text-muted align-middle">%s</td>', $log_owner);
 
 						printf("</tr></tbody>");
 			    }

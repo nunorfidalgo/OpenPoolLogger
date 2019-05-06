@@ -77,7 +77,7 @@ $query = "SELECT `employers`.`eid`, `employers`.`fullname`, `employers`.`usernam
 if ($stmt = $con->prepare($query)) {
     $stmt->execute();
 	//print_r($stmt);
-    $stmt->bind_result($fid, $fullname, $username, $email, $admin, $record_datetime);
+    $stmt->bind_result($eid, $fullname, $username, $email, $admin, $record_datetime);
     while ($stmt->fetch()) {
         //printf("%s, %s\n", $field1, $field2);
 		printf("<tbody><tr>");
@@ -96,7 +96,7 @@ if ($stmt = $con->prepare($query)) {
     <td class="text-muted">
       <form class="form" id="edit-employer-form" method="post" action="employers_form.php" role="form">
         <button type="submit" name="submit" value="edit-employer-form">
-        <input hidden name="fid" value="'.$fid.'"/>
+        <input hidden name="eid" value="'.$eid.'"/>
           <ion-icon name="build"></ion-icon>
         </button>
       </form>
