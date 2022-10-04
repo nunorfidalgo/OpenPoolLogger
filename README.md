@@ -15,11 +15,11 @@ This can simple be expanded to include more parameters.
 * Only using POSTS, no GETS
 ## Requirements
 ### Develop on
-* MAMP for Windows version 3.3.1
-* MySQL 5.6.34
-* PhpMyAdmin version 4.7.0
-* PHP 7.1.5
-* Apache/2.2.31 (Win32)
+* Fedora 36 Workstation
+* MySQL 8.0.30
+* PhpMyAdmin 5.2.0-1.fc36
+* PHP 8.1.10
+* Apache/2.4.54 (Fedora Linux)
 ### API's
 * HTML5
 * Bootstrap 4.1
