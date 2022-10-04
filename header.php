@@ -3,7 +3,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="description" content="">
 	<meta name="author" content="">
-	<link rel="icon" href="favicon.ico">
+	<link rel="icon" href="images/favicon.ico">
 
 	<title> OpenPoolLogger </title>
 
@@ -14,5 +14,5 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
 	<!-- Custom styles for this template -->
-	<link href="site.css" rel="stylesheet">
+	<link href="css/openpoollogger.css" rel="stylesheet">
 </head>

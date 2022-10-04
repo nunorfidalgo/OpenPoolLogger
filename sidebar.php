@@ -13,7 +13,6 @@
 			<a class="nav-link  <?php if ($_SESSION['sidebar'] == "charts" ) echo "active"; ?>" href="charts.php">
 			<span data-feather="bar-chart-2"></span>
 				Gráficos
-				<span class="sr-only">(current)</span>
 			</a>
 		</li>
 

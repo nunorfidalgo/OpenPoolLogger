@@ -1,5 +1,4 @@
 <?php
-error_reporting(E_ALL & ~E_NOTICE);
 require_once('config.php');
 
 if( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
@@ -11,9 +10,7 @@ if( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 	$conn = new mysqli($host, $user, $password, $dbname, $port, $socket)
 		or die ('Could not connect to the database server' . mysqli_connect_error());
 
-	// $sql="SELECT * FROM `funcionarios` WHERE `funcionarios`.`email`='$inputEmail' AND `funcionarios`.`password`='$inputPassword'";
 	$sql="SELECT * FROM `employers` WHERE `employers`.`email`='$inputEmail' AND `employers`.`password`='$inputPassword'";
-	// SELECT * FROM `employers` WHERE `employers`.`email`='user1@pool.lan' AND `employers`.`password`=sha1('teste1');
 
 	// echo "<br><br>";
 	// echo $sql;
@@ -48,7 +45,6 @@ if( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 	}
 $conn->close();
 } else {
-	// echo "ola";
 	header( "Location: index.php" );
 }
 ?>

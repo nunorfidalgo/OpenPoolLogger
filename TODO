@@ -1,0 +1,12 @@
+# Bugs
+- bug login sessão
+- bug na paginação devido as sessões
+- order by record_time, as horas estão erradas
+- nas configurações o valor do parametro vem da BD
+- filter, date e orderby não funcionam
+
+# add
+- Pesquisa por nome de funcionário
+- adiconar registo falta o valor de correção
+- importação/exportção de dados de log para CSV
+- Session timeout

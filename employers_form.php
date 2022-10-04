@@ -4,6 +4,8 @@ if ( !isset($_SESSION["user"]) ) header( "Location: index.php" );
 $_SESSION["sidebar"] = "";
 $_SESSION["menu"] = ""; // see on edit-employer-form
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 error_reporting(E_ALL & ~E_NOTICE);
 require_once('config.php');
 
@@ -28,6 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "add-employer-fo
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "add-employer-form-submit" ) {
+  $_SESSION["menu"] = "add-employer-form-submit";
 
 	if (empty($_POST["inputFullname"])) {
 		$inputFullnameErr = "* Nome completo é obrigatório.";
@@ -307,6 +310,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "edit-employer-f
     //   echo $msg;
 		// 	$msg = "";
     // }
+    print_r($_SESSION);
     ?>
 	</form>
 

@@ -1,5 +1,4 @@
 <?php
-error_log("\n\nInicio!!!\n");
 if ( isset($_SESSION["user"]) ) header( "Location: logs.php" );
 ?>
 <!doctype html>
@@ -9,7 +8,7 @@ if ( isset($_SESSION["user"]) ) header( "Location: logs.php" );
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="favicon.ico">
+    <link rel="icon" href="images/favicon.ico">
 
     <title> OpenPoolLogger </title>
 
@@ -17,12 +16,12 @@ if ( isset($_SESSION["user"]) ) header( "Location: logs.php" );
    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
     <!-- Custom styles for this template -->
-    <link href="signin.css" rel="stylesheet">
+    <link href="css/signin.css" rel="stylesheet">
   </head>
 
   <body class="text-center">
     <form class="form-signin" id="login-form" method="post" action="login.php" role="form">
-      <img class="mb-4" src="bootstrap-solid.svg" alt="" width="72" height="72">
+      <img class="mb-4" src="images/bootstrap-solid.svg" alt="" width="72" height="72">
 
       <h1 class="h3 mb-3 font-weight-normal"> OpenPoolLogger </h1>
 
