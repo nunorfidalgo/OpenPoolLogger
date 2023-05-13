@@ -1,0 +1,195 @@
+<!-- <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+
+			<div class="btn-group" role="group">
+				<button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Piscina
+				</button>
+				<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+					<a class="dropdown-item" href="#">Piscina</a>
+					<a class="dropdown-item" href="#">Jacuzzi</a>
+				</div>
+
+			</div>
+			<div class="btn-group" role="group">
+				<button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				  Todos
+				</button>
+				<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+					<a class="dropdown-item" href="#">Cloro</a>
+					<a class="dropdown-item" href="#">DPD3</a>
+					<a class="dropdown-item" href="#">Ph</a>
+					<a class="dropdown-item" href="#">Temperatura</a>
+					<a class="dropdown-item" href="#">Maq</a>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+
+			<div class="btn-group" role="group">
+				<button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Última Semana
+				</button>
+				<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+					<a class="dropdown-item" href="#">Última Semana</a>
+					<a class="dropdown-item" href="#">Últimas duas semanas</a>
+					<a class="dropdown-item" href="#">Último Mês</a>
+					<a class="dropdown-item" href="#">Último Ano</a>
+				</div>
+			</div>
+
+			<button type="button" class="btn btn-outline-secondary active"> <ion-icon name="pulse"></ion-icon>&nbsp;Mostrar </button>
+		</div> -->
+
+
+
+		var ctx = document.getElementById("myChart");
+	var myChart = new Chart(ctx, {
+		type: 'line',
+		data: {
+		labels: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+		datasets: [{
+			data: [15339, 21345, 18483, 24003, 23489, 24092, 12034],
+			lineTension: 0,
+			backgroundColor: 'transparent',
+			borderColor: '#007bff',
+			borderWidth: 4,
+			pointBackgroundColor: '#007bff'
+		}]
+		},
+		options: {
+		scales: {
+			yAxes: [{
+			ticks: {
+				beginAtZero: false
+			}
+			}]
+		},
+		legend: {
+			display: false,
+		}
+		}
+	});
+
+
+
+
+	/*
+	data: {
+			labels: Object.keys(query_result),
+			datasets: [
+				{
+					label: Object.keys(query_result),
+					data: Object.values(query_result),
+				},
+			],
+		},
+	*/
+
+
+
+var myChart = new Chart(ctx, {
+		type: 'bar',
+		data: {
+			labels: ['Name1', 'Name2', 'Name3', 'Name4', 'Name5', 'Name6'],
+			datasets: [{
+				label: '# suceesses',
+				stack: 'Stack 0',
+				data: [12, 19, 3, 5, 2, 3],
+				backgroundColor: 
+					'rgba(90, 220, 40)',
+				borderColor: 
+					'rgba(90, 220, 40)',
+				borderWidth: 1
+			},
+				{
+					label: '# failures',
+					stack: 'Stack 1',
+					data: [2, 1, 7, 0, 3, 1],
+					backgroundColor: 
+						'rgba(220, 40, 40)',
+					borderColor: 
+						'rgba(220, 40, 40)',
+					borderWidth: 1
+				}]
+		},
+		options: {
+			scales: {
+				yAxes: [{
+					ticks: {
+						beginAtZero: true
+					}
+				}]
+			}
+		}
+	});
+
+
+
+
+
+
+	var myChart = new Chart(ctx, {
+		type: 'line',
+		data: {
+			labels: record_time,
+			datasets: [{
+				label: '# cl',
+				stack: 'Stack 0',
+				data: cl,
+				backgroundColor: 'rgba(255, 153, 153)',
+				borderColor: 'rgba(0, 0, 0)',
+				borderWidth: 1
+			// },
+			// {
+			// 	label: '# dpd3',
+			// 	stack: 'Stack 1',
+			// 	data: dpd3,
+			// 	backgroundColor: 'rgba(255, 204, 153)',
+			// 	borderColor: 'rgba(0, 0, 0)',
+			// 	borderWidth: 1
+			// },
+			// {
+			// 	label: '# pH',
+			// 	stack: 'Stack 1',
+			// 	data: ph,
+			// 	backgroundColor: 'rgba(255, 255, 153)',
+			// 	borderColor: 'rgba(0, 0, 0)',
+			// 	borderWidth: 1
+			// },
+			// {
+			// 	label: '# Temp',
+			// 	stack: 'Stack 1',
+			// 	data: temp,
+			// 	backgroundColor: 'rgba(204, 255, 153)',
+			// 	borderColor: 'rgba(0, 0, 0)',
+			// 	borderWidth: 1
+			// },
+			// {
+			// 	label: '# Maq',
+			// 	stack: 'Stack 1',
+			// 	data: maq,
+			// 	backgroundColor: 'rgba(153, 255, 153)',
+			// 	borderColor: 'rgba(0, 0, 0)',
+			// 	borderWidth: 1
+			// },
+			// {
+			// 	label: '# Correção',
+			// 	stack: 'Stack 1',
+			// 	data: correction,
+			// 	backgroundColor: 'rgba(2153, 255, 255)',
+			// 	borderColor: 'rgba(0, 0, 0)',
+			// 	borderWidth: 1
+			}]
+		},
+		options: {
+			scales: {
+				yAxes: [{
+					ticks: {
+						beginAtZero: true
+					}
+				}]
+			}
+		}
+	});

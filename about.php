@@ -29,13 +29,12 @@ $_SESSION["menu"] = "about";
   <div class="table-responsive">
 
     <div class="jumbotron">
-      <h1 class="display-4">Olá e bem-vindo ao OpenPoolLogger.</h1>
+      <h1 class="display-4">Obrigado por usar o OpenPoolLogger.</h1>
       <br>
-      <p class="lead"> O âmbito desta aplicação Web será de guardar registos dos valores dos parametros da água de que temos nas piscinas, Jacuzzi's, entre outros.
-        De momento os parametros guardados são o cloro, o DPD3, o pH, a temperatura, os watts, hora do registo e quem efectou o registo, sendo que de seguida podemos
-        introduzir o valor de correção do cloro (em kg). Estes valores têm uma relação entre si, mostrados em cores, assim como os valores favoraveis que fazem o
-        sistema da piscina funcionar da melhor forma.
-        Após alguns registos temos acesso a gráficos que mostram de forma rápida a evolução destes parametros e como consequencia o estado geral da última semana, mês, etc...
+      <p class="lead"> 
+        Esta aplicação foi desenvolvida para guardar registos de valores dos parametros da água de que temos em piscinas, Jacuzzi's e outros.
+        De momento os parametros que podemos registar são o Cloro, o DPD3, o pH, a temperatura, os watts gastos pela máquina, o valor de correção 
+        do cloro (em kg), hora do registo, o respónsável que efecta o registo destes valores e o tipo a que os valores fazem referencia.
       </p>
       <br>
       <hr class="my-4">

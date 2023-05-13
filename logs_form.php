@@ -4,14 +4,13 @@ if ( !isset($_SESSION["user"]) ) header( "Location: index.php" );
 $_SESSION["sidebar"] = "";
 $_SESSION["menu"] = "";
 
-error_reporting(E_ALL & ~E_NOTICE);
 require_once('config.php');
 
 $inputClErr = $inputDpd3Err = $inputPhErr = $inputTempErr = $inputMaqErr = $inputLogTypeErr = "";
 $msg = $inputCl = $inputDpd3 = $inputPh = $inputTemp = $inputMaq = $inputLogType = "";
 $insert_count = 0;
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logadd-form") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "log-add-form") {
 
   if (!empty($_POST["inputCl"])) {
     $inputCl = test_input($_POST["inputCl"]);
@@ -89,8 +88,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logadd-form") {
     $conn = new mysqli($host, $user, $password, $dbname, $port, $socket)
     or die ('Could not connect to the database server' . mysqli_connect_error());
 
-    $sql="INSERT INTO `logs` (`pid`, `cl`, `dpd3`, `ph`, `temp`, `maq`, `timedate`, `log_owner`, `log_type`)
-    VALUES (NULL, '".$inputCl."', '".$inputDpd3."', '".$inputPh."', '".$inputTemp."', '".$inputMaq."', NOW(), '".$_SESSION['user']['fid']."', '".$inputLogType."')";
+    $sql="INSERT INTO `logs` (`lid`, `cl`, `dpd3`, `ph`, `temp`, `maq`, `correction`, `record_time`, `log_owner`, `log_type`)
+    VALUES (NULL, '".$inputCl."', '".$inputDpd3."', '".$inputPh."', '".$inputTemp."', '".$inputMaq."', '".$inputCorrection."', NOW(), '".$_SESSION['user']['fid']."', '".$inputLogType."')";
 
     // echo $sql;
     // echo "<br><br>";
@@ -161,10 +160,10 @@ function test_input($data) {
 
 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
 	<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-		<h1 class="h2"> Adicionar novo registo </h1>
+		<h1 class="h2"> Novo Registo </h1>
   </div>
 
-  <form class="form" id="logadd-form" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" role="form">
+  <form class="form" id="log-add-form" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" role="form">
     <div class="form-row">
       <div class="form-group col-md-6">
         <label for="inputCl">Cloro</label>

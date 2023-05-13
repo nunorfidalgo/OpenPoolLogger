@@ -142,6 +142,10 @@ $_SESSION["sidebar"] = "";
 <?php
 ?>
 
+<br>
+<hr/>
+<br>
+
 
 </main>
 

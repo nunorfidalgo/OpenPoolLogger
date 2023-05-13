@@ -53,17 +53,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 		}
 	}
 }
-
-// // export
-// if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-export" ) {
-// 	echo $_SESSION['logs']['export_query'];
-// 	die();
-// }
-
-// // import
-// if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "logs-form-import" ) {
-// 	echo "import... TODO!"; die();
-// }
 ?>
 
 <!doctype html>
@@ -85,14 +74,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 	<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 		<h1 class="h1"> Registos </h1>
 		<?php
-    if( isset($_SESSION["msg"]) && !empty($_SESSION["msg"]) ){
-      echo $_SESSION["msg"];
-    }
-    echo $_SESSION["msg"] = "";
+			if( isset($_SESSION["msg"]) && !empty($_SESSION["msg"]) ){
+			echo $_SESSION["msg"];
+			}
+			echo $_SESSION["msg"] = "";
 		?>
 		<div class="btn-group" role="group">
 			<a class="btn btn-outline-primary" role="button" href="#"><ion-icon name="copy"></ion-icon>&nbsp; Importar </a>
-		  <a class="btn btn-primary" role="button" href="logs_form.php"> <ion-icon name="add-circle-outline"></ion-icon>&nbsp; Adicionar </a>
+			<a class="btn btn-primary" role="button" href="logs_form.php"> <ion-icon name="add-circle-outline"></ion-icon>&nbsp; Adicionar </a>
 		</div>
 	</div>
 
@@ -137,7 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 					<option value="last-two-months" <?php if( $_SESSION['logs']['date'] == 'last-two-months' ) echo ' selected'; ?>>Últimos dois meses</option>
 					<option value="last-year" <?php if( $_SESSION['logs']['date'] == 'last-year' ) echo ' selected'; ?>>Último Ano</option>
 				</select>
-		  </div>
+		  	</div>
 
 			<div class="btn-group" role="group">
 				<select id="inputOrderBy" name="inputOrderBy" class="form-control">
@@ -179,128 +168,128 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 				<button class="btn btn-outline-secondary active" type="submit" name="submit" value="logs-form-filter" aria-label="Filtrar"> <ion-icon name="search"></ion-icon>&nbsp; Filtrar </button>
 			</div>
 		</div>
-
-	</form>
 	</div>
+	</form>
 
-  <div class="table-responsive">
+  	<div class="table-responsive">
     <table class="table table-condensed table-sm table-hover">
-      <thead>
+	<thead>
         <tr>
-          <!-- <th data-toggle="tooltip" data-placement="top" title="id"><ion-icon name="key"></ion-icon></th> -->
-          <th data-toggle="tooltip" data-placement="top" title="Cloro, valores entre 0.00-2.00 ppm ou mg/l">Cl</th>
-          <th data-toggle="tooltip" data-placement="top" title="Dpd3, valores entre 0.00-2.00 ppm ou mg/l">DPD3</th>
-          <th data-toggle="tooltip" data-placement="top" title="pH, valores entre 0(ácido)->7(neutro)<-14(alcalino)">pH</th>
-          <th data-toggle="tooltip" data-placement="top" title="Temperatura em ºC">Temp</th>
-				  <th data-toggle="tooltip" data-placement="top" title="Watts gastos pelas máquinas">Máquina</th>
-					<th data-toggle="tooltip" data-placement="top" title="Correção dos valores de Cl/DPD3 em kg">Correção</th>
-					<th data-toggle="tooltip" data-placement="top" title="Tipo">Tipo</th>
-				  <th data-toggle="tooltip" data-placement="top" title="Data e hora">Data/Hora</th>
-				  <th data-toggle="tooltip" data-placement="top" title="Funcionário">Responsável</th>
+			<!-- <th data-toggle="tooltip" data-placement="top" title="id"><ion-icon name="key"></ion-icon></th> -->
+			<th data-toggle="tooltip" data-placement="top" title="Cloro, valores entre 0.00-2.00 ppm ou mg/l">Cl</th>
+			<th data-toggle="tooltip" data-placement="top" title="Dpd3, valores entre 0.00-2.00 ppm ou mg/l">DPD3</th>
+			<th data-toggle="tooltip" data-placement="top" title="pH, valores entre 0(ácido)->7(neutro)<-14(alcalino)">pH</th>
+			<th data-toggle="tooltip" data-placement="top" title="Temperatura em ºC">Temp</th>
+			<th data-toggle="tooltip" data-placement="top" title="Watts gastos pelas máquinas">Máquina</th>
+			<th data-toggle="tooltip" data-placement="top" title="Correção dos valores de Cl/DPD3 em kg">Correção</th>
+			<th data-toggle="tooltip" data-placement="top" title="Tipo">Tipo</th>
+			<th data-toggle="tooltip" data-placement="top" title="Data e hora">Data/Hora</th>
+			<th data-toggle="tooltip" data-placement="top" title="Funcionário">Responsável</th>
         </tr>
-      </thead>
+	</thead>
 
-			<?php
-			// main query
+		<?php
+		// main query
 
-			// update pagination
-			$query = "
-			SELECT `logs`.`lid`, `logs`.`cl`, `logs`.`dpd3`, `logs`.`ph`, `logs`.`temp`, `logs`.`maq`, `logs`.`correction`, `logs`.`record_time`, `employers`.`fullname`, `log_type`.`name`
-			FROM `logs`, `employers`, `log_type`
-			WHERE `logs`.`log_owner` = `employers`.`eid`
-			AND `logs`.`log_type` = `log_type`.`tid`";
+		// update pagination
+		$query = "
+		SELECT `logs`.`lid`, `logs`.`cl`, `logs`.`dpd3`, `logs`.`ph`, `logs`.`temp`, `logs`.`maq`, `logs`.`correction`, `logs`.`record_time`, `employers`.`fullname`, `log_type`.`name`
+		FROM `logs`, `employers`, `log_type`
+		WHERE `logs`.`log_owner` = `employers`.`eid`
+		AND `logs`.`log_type` = `log_type`.`tid`";
 
-			if( $_SESSION['logs']['logtype'] != "all" )
-				$query .= " AND `logs`.`log_type` = ".$_SESSION['logs']['logtype'];
+		if( $_SESSION['logs']['logtype'] != "all" )
+			$query .= " AND `logs`.`log_type` = ".$_SESSION['logs']['logtype'];
 
-			if( $_SESSION['logs']['date'] == 'last-week' ) $query .= " AND `logs`.`record_time` >= SUBDATE(now(), INTERVAL 1 week) ";
-			if( $_SESSION['logs']['date'] == 'last-two-weeks' ) $query .= " AND `logs`.`record_time` >= SUBDATE(now(), INTERVAL 2 week) ";
-			if( $_SESSION['logs']['date'] == 'last-month' ) $query .= " AND `logs`.`record_time` >= SUBDATE(now(), INTERVAL 1 month) ";
-			if( $_SESSION['logs']['date'] == 'last-two-months' ) $query .= " AND `logs`.`record_time` >= SUBDATE(now(), INTERVAL 2 month) ";
-			if( $_SESSION['logs']['date'] == 'last-year' ) $query .= " AND `logs`.`record_time` >= SUBDATE(now(), INTERVAL 1 year) ";
+		if( $_SESSION['logs']['date'] == 'last-week' ) $query .= " AND `logs`.`record_time` >= SUBDATE(now(), INTERVAL 1 week) ";
+		if( $_SESSION['logs']['date'] == 'last-two-weeks' ) $query .= " AND `logs`.`record_time` >= SUBDATE(now(), INTERVAL 2 week) ";
+		if( $_SESSION['logs']['date'] == 'last-month' ) $query .= " AND `logs`.`record_time` >= SUBDATE(now(), INTERVAL 1 month) ";
+		if( $_SESSION['logs']['date'] == 'last-two-months' ) $query .= " AND `logs`.`record_time` >= SUBDATE(now(), INTERVAL 2 month) ";
+		if( $_SESSION['logs']['date'] == 'last-year' ) $query .= " AND `logs`.`record_time` >= SUBDATE(now(), INTERVAL 1 year) ";
 
-			if( $_SESSION['logs']['inputEmployer'] != "all" ) {
-				$query .= " AND `logs`.`log_owner` = ".$_SESSION['logs']['inputEmployer'];
-				// $_SESSION['logs']['offset'] = 0;
+		if( $_SESSION['logs']['inputEmployer'] != "all" ) {
+			$query .= " AND `logs`.`log_owner` = ".$_SESSION['logs']['inputEmployer'];
+			// if( $_SESSION['logs']['offset'] != 0 )
+			// 	$_SESSION['logs']['offset'] = 0;
+		}
+
+		$query .= "
+		ORDER BY UNIX_TIMESTAMP(`logs`.`record_time`) ".$_SESSION['logs']['orderby'];
+
+		// for export query in logs_export.php
+		$_SESSION['logs']['export_query'] = $query;
+
+		$query_start = microtime(true);
+		$query_result = $conn->query($query);
+		// error_log(print_r($query_result,true));
+
+		$_SESSION["logs"]['num_rows'] = $query_result->num_rows;
+		$_SESSION["logs"]['total_pages'] = round($_SESSION["logs"]['num_rows'] / $_SESSION["logs"]['limit']);
+		$_SESSION["logs"]['upper_pages'] = $_SESSION["logs"]['total_pages'];
+		$_SESSION["logs"]['lower_pages'] = $_SESSION["logs"]['upper_pages'] - $_SESSION["logs"]['limit'];
+		// end update pagination
+
+		$query .= "
+		LIMIT ".$_SESSION['logs']['offset'].", ".$_SESSION['logs']['limit'];
+
+		//error_log("query: ");
+		//error_log(print_r($query,true));
+
+		$query_result = $conn->query($query);
+		error_log(print_r($query_result,true));
+		$query_end = microtime(true);
+
+		foreach ($query_result as $row) {
+			// error_log(print_r($row,true));
+
+			printf("<tbody><tr>");
+			// printf('<td class="text-muted align-middle">%s</td>', $id);
+
+			if( $row['cl'] < 1.0 ) printf('<td class="text-danger align-middle" >%s</td>', $row['cl']);
+			elseif( $row['cl'] > 1.5 ) printf('<td class="text-warning align-middle" >%s</td>', $row['cl']);
+			else printf('<td class="text-success align-middle" >%s</td>', $row['cl']);
+
+			if( $row['cl']+$row['dpd3'] < $row['cl']-0.5 ) printf('<td class="text-warning align-middle" >%s</td>', $row['dpd3']);
+			elseif( $row['cl']+$row['dpd3'] > $row['cl']+0.5 ) printf('<td class="text-danger align-middle" >%s</td>', $row['dpd3']);
+			else printf('<td class="text-success align-middle">%s</td>', $row['dpd3']);
+
+			if( $row['ph'] < 6.3 ) printf('<td class="text-danger align-middle" >%s</td>', $row['ph']);
+			elseif( $row['ph'] > 7.1 ) printf('<td class="text-success align-middle" >%s</td>', $row['ph']);
+			else printf('<td class="text-warning align-middle" >%s</td>', $row['ph']);
+
+			if( $row['temp'] < 20 ) printf('<td class="text-danger align-middle" >%s</td>', $row['temp']);
+			elseif( $row['temp'] > 25 ) printf('<td class="text-success align-middle" >%s</td>', $row['temp']);
+			else printf('<td class="text-warning align-middle" >%s</td>', $row['temp']);
+
+			if( $row['maq'] == '' ) {
+				printf('<td class="text-muted align-middle">-</td>');
+			} else {
+				if( $row['maq'] < 450 ) printf('<td class="text-success align-middle" >%s</td>', $row['maq']);
+				elseif( $row['maq'] > 500 ) printf('<td class="text-danger align-middle" >%s</td>', $row['maq']);
+				else printf('<td class="text-warning align-middle" >%s</td>', $row['maq']);
 			}
 
-			$query .= "
-			ORDER BY UNIX_TIMESTAMP(`logs`.`record_time`) ".$_SESSION['logs']['orderby'];
+			printf('<td class="text-primary align-middle">%s</td>', $row['correction']);
 
-			// for export query in logs_export.php
-			$_SESSION['logs']['export_query'] = $query;
+			printf('<td class="text-muted align-middle">%s</td>', $row['name']);
 
-			$query_start = microtime(true);
-			$query_result = $conn->query($query);
-			// error_log(print_r($query_result,true));
+			printf('<td class="text-muted align-middle">%s</td>', $row['record_time']);
 
-			$_SESSION["logs"]['num_rows'] = $query_result->num_rows;
-			$_SESSION["logs"]['total_pages'] = round($_SESSION["logs"]['num_rows'] / $_SESSION["logs"]['limit']);
-			$_SESSION["logs"]['upper_pages'] = $_SESSION["logs"]['total_pages'];
-			$_SESSION["logs"]['lower_pages'] = $_SESSION["logs"]['upper_pages'] - $_SESSION["logs"]['limit'];
-			// end update pagination
+			if( $_SESSION['user']['fullname'] == $row['fullname'])
+				printf('<td class="font-weight-bold align-middle">%s</td>', $row['fullname']);
+			else
+				printf('<td class="text-muted align-middle">%s</td>', $row['fullname']);
 
-			$query .= "
-			LIMIT ".$_SESSION['logs']['offset'].", ".$_SESSION['logs']['limit'];
+			printf("</tr></tbody>");
 
-			//error_log("query: ");
-			//error_log(print_r($query,true));
+		} // end foreach
 
-			$query_result = $conn->query($query);
-			error_log(print_r($query_result,true));
-			$query_end = microtime(true);
-
-			foreach ($query_result as $row) {
-				// error_log(print_r($row,true));
-
-				printf("<tbody><tr>");
-				// printf('<td class="text-muted align-middle">%s</td>', $id);
-
-				if( $row['cl'] < 1.0 ) printf('<td class="text-danger align-middle" >%s</td>', $row['cl']);
-				elseif( $row['cl'] > 1.5 ) printf('<td class="text-warning align-middle" >%s</td>', $row['cl']);
-				else printf('<td class="text-success align-middle" >%s</td>', $row['cl']);
-
-				if( $row['cl']+$row['dpd3'] < $row['cl']-0.5 ) printf('<td class="text-warning align-middle" >%s</td>', $row['dpd3']);
-				elseif( $row['cl']+$row['dpd3'] > $row['cl']+0.5 ) printf('<td class="text-danger align-middle" >%s</td>', $row['dpd3']);
-				else printf('<td class="text-success align-middle">%s</td>', $row['dpd3']);
-
-				if( $row['ph'] < 6.3 ) printf('<td class="text-danger align-middle" >%s</td>', $row['ph']);
-				elseif( $row['ph'] > 7.1 ) printf('<td class="text-success align-middle" >%s</td>', $row['ph']);
-				else printf('<td class="text-warning align-middle" >%s</td>', $row['ph']);
-
-				if( $row['temp'] < 20 ) printf('<td class="text-danger align-middle" >%s</td>', $row['temp']);
-				elseif( $row['temp'] > 25 ) printf('<td class="text-success align-middle" >%s</td>', $row['temp']);
-				else printf('<td class="text-warning align-middle" >%s</td>', $row['temp']);
-
-				if( $row['maq'] == '' ) {
-					printf('<td class="text-muted align-middle">-</td>');
-				} else {
-					if( $row['maq'] < 450 ) printf('<td class="text-success align-middle" >%s</td>', $row['maq']);
-					elseif( $row['maq'] > 500 ) printf('<td class="text-danger align-middle" >%s</td>', $row['maq']);
-					else printf('<td class="text-warning align-middle" >%s</td>', $row['maq']);
-				}
-
-				printf('<td class="text-primary align-middle">%s</td>', $row['correction']);
-
-				printf('<td class="text-muted align-middle">%s</td>', $row['name']);
-
-				printf('<td class="text-muted align-middle">%s</td>', $row['record_time']);
-
-				if( $_SESSION['user']['fullname'] == $row['fullname'])
-					printf('<td class="font-weight-bold align-middle">%s</td>', $row['fullname']);
-				else
-					printf('<td class="text-muted align-middle">%s</td>', $row['fullname']);
-
-				printf("</tr></tbody>");
-
-	    } // end while
-
-			$query_result->close();
-			$conn->close();
-			?>
+		$query_result->close();
+		$conn->close();
+		?>
 
     </table>
-  </div>
+  	</div>
 
 	<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
 		<div class="p-1 text-secondary">Tempo pesquisa: <b> <?php printf("%.6f", $query_end - $query_start); ?> </b> segundos, <b class="text-info"> <?php echo $_SESSION["logs"]['num_rows']; ?> </b> registos encontrados.</div>
@@ -344,7 +333,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST["submit"] == "pages-logs-form
 	echo "<br><hr/><br>";
 	echo $query;
 	echo "<br><hr/><br>";
-	var_dump($_SESSION); ?>
+	var_dump($_SESSION); 
+	?>
 
 </main>
 </div>
